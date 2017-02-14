@@ -6,13 +6,13 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const chartName = 'BarRankChart';
 const chartNameLower = chartName.toLowerCase();
 
-const extractStyles = new ExtractTextPlugin(`build/${chartNameLower}.css`);
+const extractStyles = new ExtractTextPlugin(`${chartNameLower}.css`);
 
 module.exports = {
   devtool: 'source-map',
 
   entry: {
-    [chartNameLower]: `./src/${chartNameLower}`
+    [chartNameLower]: `./src/index`
   },
 
   output: {
