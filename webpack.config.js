@@ -16,7 +16,7 @@ module.exports = {
   },
 
   output: {
-    path: 'build/',
+    path: path.resolve(__dirname, 'build'),
     filename: '[name].js',
     library: chartName,
     libraryTarget: 'umd',
@@ -79,5 +79,13 @@ module.exports = {
         screw_ie8: true
       }
     })
-  ]
+  ],
+
+  devServer: {
+    host: '0.0.0.0',
+    contentBase: [
+      path.resolve(__dirname, 'public'),
+      path.resolve(__dirname, 'node_modules')
+    ]
+  }
 };
