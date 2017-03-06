@@ -1,1 +1,1 @@
-module.exports = require('vizabi-tool-bundler')('BarRankChart', 'barrankchart', __dirname);
+module.exports = require('./webpack.external')();
