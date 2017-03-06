@@ -4,7 +4,7 @@
   "description": "Bar rank chart tool for Vizabi 📊",
   "main": "index.js",
   "scripts": {
-    "link": "npm link ../vizabi",
+    "preinstall": "npm link ../vizabi",
     "start": "webpack-dev-server",
     "build": "webpack"
   },
@@ -20,19 +20,6 @@
   },
   "homepage": "https://github.com/vizabi/vizabi-barrankchart#readme",
   "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-loader": "^6.2.10",
-    "babel-preset-es2015": "^6.22.0",
-    "bourbon": "^4.3.2",
-    "clean-webpack-plugin": "^0.1.15",
-    "css-loader": "^0.26.1",
-    "d3": "^4.5.0",
-    "extract-text-webpack-plugin": "^2.0.0-rc.3",
-    "html-loader": "^0.4.4",
-    "node-sass": "^4.5.0",
-    "sass-loader": "^6.0.0",
-    "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler",
-    "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
+    "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler"
   }
 }
