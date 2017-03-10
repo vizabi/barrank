@@ -1,6 +1,6 @@
 {
   "name": "vizabi-barrankchart",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Bar rank chart tool for Vizabi 📊",
   "main": "index.js",
   "scripts": {
