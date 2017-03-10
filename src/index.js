@@ -1,7 +1,7 @@
-import './styles.scss';
-import component from './component';
+import "./styles.scss";
+import component from "./component";
 
-export default Vizabi.Tool.extend('BarRankChart', {
+export default Vizabi.Tool.extend("BarRankChart", {
 
   // Run when the tool is created
   init: function (placeholder, externalModel) {
@@ -10,36 +10,36 @@ export default Vizabi.Tool.extend('BarRankChart', {
 
     this.components = [{
       component: component,
-      placeholder: '.vzb-tool-viz',
+      placeholder: ".vzb-tool-viz",
       model: ["state.time", "state.entities", "state.marker", "locale", "ui"]
     }, {
-      component: Vizabi.Component.get('timeslider'),
-      placeholder: '.vzb-tool-timeslider',
+      component: Vizabi.Component.get("timeslider"),
+      placeholder: ".vzb-tool-timeslider",
       model: ["state.time", "state.entities", "state.marker", "ui"]
     }, {
-      component: Vizabi.Component.get('dialogs'),
-      placeholder: '.vzb-tool-dialogs',
-      model: ['state', 'ui', 'locale']
+      component: Vizabi.Component.get("dialogs"),
+      placeholder: ".vzb-tool-dialogs",
+      model: ["state", "ui", "locale"]
     }, {
-      component: Vizabi.Component.get('buttonlist'),
-      placeholder: '.vzb-tool-buttonlist',
-      model: ['state', 'ui', 'locale']
+      component: Vizabi.Component.get("buttonlist"),
+      placeholder: ".vzb-tool-buttonlist",
+      model: ["state", "ui", "locale"]
     }, {
-      component: Vizabi.Component.get('treemenu'),
-      placeholder: '.vzb-tool-treemenu',
-      model: ['state.marker', 'state.marker_tags', 'state.time', 'locale']
+      component: Vizabi.Component.get("treemenu"),
+      placeholder: ".vzb-tool-treemenu",
+      model: ["state.marker", "state.marker_tags", "state.time", "locale"]
     }, {
-      component: Vizabi.Component.get('datanotes'),
-      placeholder: '.vzb-tool-datanotes',
-      model: ['state.marker', 'locale']
+      component: Vizabi.Component.get("datanotes"),
+      placeholder: ".vzb-tool-datanotes",
+      model: ["state.marker", "locale"]
     }, {
-      component: Vizabi.Component.get('datawarning'),
-      placeholder: '.vzb-tool-datawarning',
-      model: ['locale']
+      component: Vizabi.Component.get("datawarning"),
+      placeholder: ".vzb-tool-datawarning",
+      model: ["locale"]
     }, {
-      component: Vizabi.Component.get('steppedspeedslider'),
-      placeholder: '.vzb-tool-stepped-speed-slider',
-      model: ['state.time', 'locale']
+      component: Vizabi.Component.get("steppedspeedslider"),
+      placeholder: ".vzb-tool-stepped-speed-slider",
+      model: ["state.time", "locale"]
     }];
 
     // constructor is the same as any tool
@@ -68,11 +68,11 @@ export default Vizabi.Tool.extend('BarRankChart', {
         doubtDomain: [],
         doubtRange: []
       },
-      "buttons": ['colors', 'find', 'show', 'moreoptions', 'fullscreen', 'presentation'],
+      "buttons": ["colors", "find", "show", "moreoptions", "fullscreen", "presentation"],
       "dialogs": {
-        'popup': ['timedisplay', 'colors', 'find', 'axes', 'show', 'moreoptions'],
-        'sidebar': ['timedisplay', 'colors', 'find'],
-        'moreoptions': ['opacity', 'speed', 'colors', 'presentation', 'about']
+        "popup": ["timedisplay", "colors", "find", "axes", "show", "moreoptions"],
+        "sidebar": ["timedisplay", "colors", "find"],
+        "moreoptions": ["opacity", "speed", "colors", "presentation", "about"]
       },
       presentation: false
     }
