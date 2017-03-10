@@ -6,7 +6,7 @@
   "scripts": {
     "link": "npm link ../vizabi",
     "start": "webpack-dev-server",
-    "build": "webpack"
+    "build": "webpack --progress"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/vizabi/vizabi-barrankchart#readme",
   "devDependencies": {
+    "vizabi": "github:vizabi/vizabi",
     "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler"
   }
 }
