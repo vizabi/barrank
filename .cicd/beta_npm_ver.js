@@ -22,7 +22,7 @@ if (process.env.TRAVIS_BRANCH !== "master") {
   return;
 }
 
-fs.writeFile(FLAGFILE);
+fs.writeFileSync(FLAGFILE);
 
 console.log("--- Latest published version: ", lastPublishedVersion);
 console.log("--- Previous package.json version: ", oldPjson.version);
