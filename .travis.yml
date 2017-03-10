@@ -21,7 +21,6 @@ cache:
     - node_modules
 
 before_install:
-  - sudo apt update
   - npm install -g npm@latest
   - sudo pip install s3cmd
 
