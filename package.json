@@ -4,7 +4,7 @@
   "description": "Bar rank chart tool for Vizabi 📊",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npm link ../vizabi",
+    "link": "npm link ../vizabi",
     "start": "webpack-dev-server",
     "build": "webpack"
   },
