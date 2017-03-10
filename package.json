@@ -1,13 +1,13 @@
 {
   "name": "vizabi-barrankchart",
-  "version": "1.0.1-1",
+  "version": "1.0.1-2",
   "description": "Bar rank chart tool for Vizabi 📊",
-  "main": "index.js",
   "scripts": {
     "link": "npm link ../vizabi",
     "start": "webpack-dev-server",
     "build": "webpack --progress"
   },
+  "main": "build/dist/barrankchart.js",
   "files": [
     "build/dist"
   ],
