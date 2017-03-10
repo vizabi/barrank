@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/vizabi/vizabi-barrankchart#readme",
   "devDependencies": {
+    "compare-version": "^0.1.2",
+    "shelljs": "^0.7.7",
     "vizabi": "^0.20.1-17",
     "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler"
   }
