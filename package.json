@@ -8,6 +8,9 @@
     "start": "webpack-dev-server",
     "build": "webpack --progress"
   },
+  "files": [
+    "build/dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vizabi/vizabi-barrankchart.git"
