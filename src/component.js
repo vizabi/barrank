@@ -40,6 +40,9 @@ const BarRankChart = Vizabi.Component.extend({
 
     this.model_binds = {
       'change:time.value': () => {
+        //TODO: review this after vizabi#2450 will be fixed
+        if (!_this.model._ready) return;
+        
         if (this._readyOnce) {
           this.onTimeChange();
         }
