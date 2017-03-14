@@ -419,20 +419,20 @@ const BarRankChart = Vizabi.Component.extend({
       - scrollMargin;
     this.xScale.range([0, rightEdge]);
 
-    let zeroValueWidth = this.xScale(0);
-    zeroValueWidth = !isFinite(zeroValueWidth) ? 0 : zeroValueWidth;
+    const scaleType = this.model.marker.axis_x.scaleType;
+    let zeroValueOffset = (scaleType === "log"? 0 : this.xScale(0)) || 0;
     let shift = this._getWidestLabelWidth();
 
-    if (zeroValueWidth > ((ltr ? margin.left : margin.right) + this._getWidestLabelWidth())) {
-      shift = zeroValueWidth;
+    if (zeroValueOffset > ((ltr ? margin.left : margin.right) + this._getWidestLabelWidth())) {
+      shift = zeroValueOffset;
     }
 
-    if (zeroValueWidth < 0) {
-      this.xScale.range([0, rightEdge - Math.abs(zeroValueWidth)]);
-      zeroValueWidth = this.xScale(0) || 0;
+    if (zeroValueOffset < 0) {
+      this.xScale.range([0, rightEdge - Math.abs(zeroValueOffset)]);
+      zeroValueOffset = (scaleType === "log"? 0 : this.xScale(0)) || 0;
     }
 
-    const barWidth = (value) => this.xScale(value) - zeroValueWidth;
+    const barWidth = (value) => this.xScale(value) - zeroValueOffset;
 
     const labelAnchor = ltr ? 'end' : 'start';
     const valueAnchor = ltr ? 'start' : 'end';
