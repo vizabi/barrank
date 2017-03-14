@@ -419,7 +419,8 @@ const BarRankChart = Vizabi.Component.extend({
       - scrollMargin;
     this.xScale.range([0, rightEdge]);
 
-    let zeroValueWidth = this.xScale(0) || 0;
+    let zeroValueWidth = this.xScale(0);
+    zeroValueWidth = !isFinite(zeroValueWidth) ? 0 : zeroValueWidth;
     let shift = this._getWidestLabelWidth();
 
     if (zeroValueWidth > ((ltr ? margin.left : margin.right) + this._getWidestLabelWidth())) {
