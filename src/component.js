@@ -89,8 +89,11 @@ const BarRankChart = Vizabi.Component.extend({
   onTimeChange() {
     this.model.marker.getFrame(this.model.time.value, values => {
       this.values = values;
-      this.loadData();
-      this.draw();
+
+      if (this.values) {
+        this.loadData();
+        this.draw();
+      }
     });
   },
 
@@ -131,12 +134,14 @@ const BarRankChart = Vizabi.Component.extend({
    */
   ready() {
     this.model.marker.getFrame(this.model.time.value, values => {
-
       this.values = values;
-      this.loadData();
-      this.draw(true);
-      this._updateOpacity();
-      this._drawColors();
+
+      if (this.values) {
+        this.loadData();
+        this.draw(true);
+        this._updateOpacity();
+        this._drawColors();
+      }
     });
   },
 
@@ -187,7 +192,7 @@ const BarRankChart = Vizabi.Component.extend({
       this.parent.findChildByName('gapminder-datanotes').pin();
     });
 
-    this.infoEl.on('mouseover', function () {
+    this.infoEl.on('mouseover', function() {
       const rect = this.getBBox();
       const ctx = utils.makeAbsoluteContext(this, this.farthestViewportElement);
       const coord = ctx(rect.x - 10, rect.y + rect.height + 10);
@@ -197,7 +202,7 @@ const BarRankChart = Vizabi.Component.extend({
         .setPos(coord.x, coord.y);
     });
 
-    this.infoEl.on('mouseout', function () {
+    this.infoEl.on('mouseout', function() {
       _this.parent.findChildByName('gapminder-datanotes').hide();
     });
 
@@ -520,7 +525,7 @@ const BarRankChart = Vizabi.Component.extend({
     // make the groups for the entities which were not drawn yet (.data.enter() does this)
     updatedBars = updatedBars.enter()
       .append('g')
-      .each(function (d) {
+      .each(function(d) {
         const self = d3.select(this);
 
         self
@@ -584,7 +589,7 @@ const BarRankChart = Vizabi.Component.extend({
     const _this = this;
 
     this.barContainer.selectAll('.vzb-br-bar>rect')
-      .each(function ({ entity }) {
+      .each(function({ entity }) {
         const self = d3.select(this);
         const color = _this.values.color[entity];
 
@@ -617,9 +622,9 @@ const BarRankChart = Vizabi.Component.extend({
    */
 
   _scrollTopTween(scrollTop) {
-    return function () {
+    return function() {
       const node = this, i = d3.interpolateNumber(this.scrollTop, scrollTop);
-      return function (t) {
+      return function(t) {
         node.scrollTop = i(t);
       };
     };
