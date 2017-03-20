@@ -42,7 +42,7 @@ const BarRankChart = Vizabi.Component.extend({
       'change:time.value': () => {
         // TODO: review this after vizabi#2450 will be fixed
         if (!this.model._ready) return;
-        
+
         if (this._readyOnce) {
           this.onTimeChange();
         }
@@ -120,6 +120,8 @@ const BarRankChart = Vizabi.Component.extend({
     // set up formatters
     this.xAxis.tickFormat(this.model.marker.axis_x.getTickFormatter());
 
+    this._localeId = this.model.locale.id;
+    this._entityLabels = {};
     this._presentation = !this.model.ui.presentation;
     this._formatter = this.model.marker.axis_x.getTickFormatter();
 
@@ -202,7 +204,7 @@ const BarRankChart = Vizabi.Component.extend({
         .setPos(coord.x, coord.y);
     });
 
-    this.infoEl.on('mouseout', function() {
+    this.infoEl.on('mouseout', () => {
       _this.parent.findChildByName('gapminder-datanotes').hide();
     });
 
@@ -287,8 +289,10 @@ const BarRankChart = Vizabi.Component.extend({
       infoElMargin,
     } = this.activeProfile;
 
-    this.height = +this.element.style('height').replace('px', '');
-    this.width = +this.element.style('width').replace('px', '');
+    this.height = parseInt(this.element.style('height'), 10) || 0;
+    this.width = parseInt(this.element.style('width'), 10) || 0;
+
+    if (!this.height || !this.width) return utils.warn('Dialog resize() abort: vizabi container is too little or has display:none');
 
     this.barViewport
       .style('height', `${this.height - margin.bottom - margin.top}px`);
@@ -398,10 +402,9 @@ const BarRankChart = Vizabi.Component.extend({
       if (entitiesCountChanged) {
         this._entitiesCount = this.sortedEntities.length;
       }
-      this._resizeSvg();
     }
 
-
+    this._resizeSvg();
     this._scroll(duration);
 
 
@@ -520,52 +523,70 @@ const BarRankChart = Vizabi.Component.extend({
   _createAndDeleteBars(updatedBars) {
     const _this = this;
 
+    // TODO: revert this commit after fixing https://github.com/vizabi/vizabi/issues/2450
+    const [entity] = this.sortedEntities;
+    if (!this._entityLabels[entity.entity]) {
+      this._entityLabels[entity.entity] = entity.label;
+    }
+
+    const localeChanged = this._entityLabels[entity.entity] !== this.values.label[entity.entity]
+      && this.model.locale.id !== this._localeId;
+
+    if (localeChanged) {
+      this._localeId = this.model.locale.id;
+      this._entityLabels[entity.entity] = this.values.label[entity.entity];
+    }
+
     // remove groups for entities that are gone
     updatedBars.exit().remove();
 
     // make the groups for the entities which were not drawn yet (.data.enter() does this)
-    updatedBars = updatedBars.enter()
-      .append('g')
+    updatedBars = (localeChanged ? updatedBars : updatedBars.enter().append('g'))
       .each(function(d) {
         const self = d3.select(this);
 
-        self
-          .attr('class', 'vzb-br-bar')
-          .classed('vzb-selected', _this.model.marker.isSelected(d))
-          .attr('id', `vzb-br-bar-${d.entity}-${_this._id}`)
-          .on('mousemove', d => _this.model.marker.highlightMarker(d))
-          .on('mouseout', () => _this.model.marker.clearHighlighted())
-          .on('click', d => {
-            _this.model.marker.selectMarker(d)
-          });
-
-        const barRect = self.append('rect')
-          .attr('stroke', 'transparent');
-
         const labelFull = _this.values.label[d.entity];
         const labelSmall = labelFull.length < 12 ? labelFull : `${labelFull.substring(0, 9)}...`;
-        const barLabel = self.append('text')
+        const barLabel = (d.barLabel || self.append('text'))
           .attr('class', 'vzb-br-label')
-          .attr('dy', '.325em')
+          .attr('dy', '.325em');
 
         const labelFullWidth = barLabel.text(labelFull).node().getBBox().width;
         const labelSmallWidth = barLabel.text(labelSmall).node().getBBox().width;
 
-        const barValue = self.append('text')
-          .attr('class', 'vzb-br-value')
-          .attr('dy', '.325em')
-
         Object.assign(d, {
-          self,
-          barRect,
-          barLabel,
-          barValue,
-          isNew: true,
           labelFullWidth,
           labelSmallWidth,
           labelFull,
           labelSmall,
+          barLabel,
         });
+
+        if (!localeChanged) {
+          self
+            .attr('class', 'vzb-br-bar')
+            .classed('vzb-selected', _this.model.marker.isSelected(d))
+            .attr('id', `vzb-br-bar-${d.entity}-${_this._id}`)
+            .on('mousemove', d => _this.model.marker.highlightMarker(d))
+            .on('mouseout', () => _this.model.marker.clearHighlighted())
+            .on('click', d => {
+              _this.model.marker.selectMarker(d);
+            });
+
+          const barRect = self.append('rect')
+            .attr('stroke', 'transparent');
+
+          const barValue = self.append('text')
+            .attr('class', 'vzb-br-value')
+            .attr('dy', '.325em');
+
+          Object.assign(d, {
+            self,
+            isNew: true,
+            barRect,
+            barValue,
+          });
+        }
       })
       .merge(updatedBars);
   },
@@ -575,9 +596,7 @@ const BarRankChart = Vizabi.Component.extend({
     const labelKey = big ? 'labelFull' : 'labelSmall';
 
     const bar = this.sortedEntities
-      .reduce((a, b) => {
-        return a[widthKey] < b[widthKey] ? b : a;
-      });
+      .reduce((a, b) => a[widthKey] < b[widthKey] ? b : a);
 
     const text = bar.barLabel.text();
     const width = bar.barLabel.text(bar[labelKey]).node().getBBox().width;
@@ -597,7 +616,7 @@ const BarRankChart = Vizabi.Component.extend({
         if (!color && color !== 0) {
           self
             .style('fill', COLOR_WHITEISH)
-            .attr('stroke', COLOR_BLACKISH)
+            .attr('stroke', COLOR_BLACKISH);
         } else {
           self
             .style('fill', _this._getColor(color))
@@ -641,11 +660,13 @@ const BarRankChart = Vizabi.Component.extend({
     return Object.keys(values).map(entity => {
       const cached = this._entities[entity];
       const value = values[entity];
+      const label = this.values.label[entity];
       const formattedValue = this._formatter(value);
 
       if (cached) {
         return Object.assign(cached, {
           value,
+          label,
           formattedValue,
           changedValue: formattedValue !== cached.formattedValue,
           changedWidth: value !== cached.value,
@@ -663,12 +684,11 @@ const BarRankChart = Vizabi.Component.extend({
         isNew: true
       };
     }).sort(({ value: a }, { value: b }) => b - a)
-      .map((entity, index) => {
-        return Object.assign(entity, {
+      .map((entity, index) =>
+        Object.assign(entity, {
           index,
           changedIndex: index !== entity.index
-        });
-      });
+        }));
   },
 
   _selectBars() {
