@@ -1,6 +1,6 @@
 {
   "name": "vizabi-barrankchart",
-  "version": "1.0.7",
+  "version": "1.0.8-1",
   "description": "Bar rank chart tool for Vizabi 📊",
   "scripts": {
     "link": "npm link ../vizabi",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "compare-version": "^0.1.2",
     "shelljs": "^0.7.7",
-    "vizabi": "^0.20.2-1",
+    "vizabi": "^0.20.2-25",
     "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler"
   }
 }
