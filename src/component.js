@@ -423,7 +423,7 @@ const BarRankChart = Vizabi.Component.extend({
     this.xScale.range([0, rightEdge]);
 
     const scaleType = this.model.marker.axis_x.scaleType;
-    let zeroValueOffset = (scaleType === "log"? 0 : this.xScale(0)) || 0;
+    let zeroValueOffset = (scaleType === "log" ? 0 : this.xScale(0)) || 0;
     let shift = this._getWidestLabelWidth();
 
     if (zeroValueOffset > ((ltr ? margin.left : margin.right) + this._getWidestLabelWidth())) {
@@ -432,7 +432,7 @@ const BarRankChart = Vizabi.Component.extend({
 
     if (zeroValueOffset < 0) {
       this.xScale.range([0, rightEdge - Math.abs(zeroValueOffset)]);
-      zeroValueOffset = (scaleType === "log"? 0 : this.xScale(0)) || 0;
+      zeroValueOffset = (scaleType === "log" ? 0 : this.xScale(0)) || 0;
     }
 
     const barWidth = (value) => this.xScale(value) - zeroValueOffset;
@@ -547,7 +547,9 @@ const BarRankChart = Vizabi.Component.extend({
 
         const labelFull = _this.values.label[d.entity];
         const labelSmall = labelFull.length < 12 ? labelFull : `${labelFull.substring(0, 9)}...`;
-        const barLabel = (d.barLabel || self.append('text'))
+
+        d.barLabel && d.barLabel.remove();
+        const barLabel = self.append('text')
           .attr('class', 'vzb-br-label')
           .attr('dy', '.325em');
 
