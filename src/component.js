@@ -524,17 +524,17 @@ const BarRankChart = Vizabi.Component.extend({
     const _this = this;
 
     // TODO: revert this commit after fixing https://github.com/vizabi/vizabi/issues/2450
-    const [{ entity, label }] = this.sortedEntities;
-    if (!this._entityLabels[entity]) {
-      this._entityLabels[entity] = label;
+    const [entity] = this.sortedEntities;
+    if (!this._entityLabels[entity.entity]) {
+      this._entityLabels[entity.entity] = entity.label;
     }
 
-    const localeChanged = this._entityLabels[entity.entity] !== this.values.label[entity]
+    const localeChanged = this._entityLabels[entity.entity] !== this.values.label[entity.entity]
       && this.model.locale.id !== this._localeId;
 
     if (localeChanged) {
       this._localeId = this.model.locale.id;
-      this._entityLabels[entity] = this.values.label[entity];
+      this._entityLabels[entity.entity] = this.values.label[entity.entity];
     }
 
     // remove groups for entities that are gone
