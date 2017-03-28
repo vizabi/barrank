@@ -57,8 +57,9 @@ const BarRankChart = Vizabi.Component.extend({
       },
       'change:marker.axis_x.scaleType': () => {
         if (this._readyOnce) {
-          this.loadData();
-          this.draw(true);
+          if (this.loadData()) {
+            this.draw(true);
+          }
         }
       },
       'change:marker.color.palette': () => {
@@ -91,8 +92,9 @@ const BarRankChart = Vizabi.Component.extend({
       this.values = values;
 
       if (this.values) {
-        this.loadData();
-        this.draw();
+        if (this.loadData()) {
+          this.draw();
+        }
       }
     });
   },
@@ -139,10 +141,11 @@ const BarRankChart = Vizabi.Component.extend({
       this.values = values;
 
       if (this.values) {
-        this.loadData();
-        this.draw(true);
-        this._updateOpacity();
-        this._drawColors();
+        if (this.loadData()) {
+          this.draw(true);
+          this._updateOpacity();
+          this._drawColors();
+        }
       }
     });
   },
@@ -156,7 +159,10 @@ const BarRankChart = Vizabi.Component.extend({
 
     this.translator = this.model.locale.getTFunction();
     // sort the data (also sets this.total)
-    this.sortedEntities = this._sortByIndicator(this.values.axis_x);
+    const xAxisValues = this.values.axis_x;
+    if (!Object.keys(xAxisValues).length) return false;
+    
+    this.sortedEntities = this._sortByIndicator(xAxisValues);
 
     this.header
       .select('.vzb-br-title')
@@ -208,6 +214,7 @@ const BarRankChart = Vizabi.Component.extend({
       _this.parent.findChildByName('gapminder-datanotes').hide();
     });
 
+    return true;
   },
 
   draw(force = false) {
