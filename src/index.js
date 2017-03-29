@@ -50,15 +50,92 @@ export default Vizabi.Tool.extend("BarRankChart", {
    * Determines the default model of this tool
    */
   default_model: {
-    state: {
-      entities: {
-        dim: "id"
+    "state": {
+      "time": {
+        "autogenerate": {
+          "data": "data",
+          "conceptIndex": 0,
+          "conceptType": "time"
+        }
       },
-      time: {},
-      marker: {
-        axis_x: { allow: { scales: ["linear", "log"] } },
-        axis_y: { allow: { scales: ["ordinal", "nominal"] } },
-        color: {}
+      "entities": {
+        "autogenerate": {
+          "data": "data",
+          "conceptIndex": 0
+        }
+      },
+      "entities_colorlegend": {
+        "autogenerate": {
+          "data": "data",
+          "conceptIndex": 0
+        }
+      },
+      "entities_tags": {},
+      "marker_tags": {
+        "space": ["entities_tags"],
+        "label": {},
+        "hook_parent": {}
+      },
+      "entities_allpossible": {
+        "autogenerate": {
+          "data": "data",
+          "conceptIndex": 0
+        }
+      },
+      "marker_allpossible": {
+        "space": ["entities_allpossible"],
+        "label": {
+          "use": "property",
+          "autogenerate": {
+            "conceptIndex": 0
+          }
+        }
+      },
+      "marker": {
+        "space": ["entities", "time"],
+        "axis_x": {
+          "use": "indicator",
+          "allow": { scales: ["linear", "log"] },
+          "autogenerate": {
+            "conceptIndex": 0,
+            "conceptType": "measure"
+          }
+        },
+        "axis_y": {
+          "use": "property",
+          "allow": { scales: ["ordinal", "nominal"] },
+          "autogenerate": {
+            "conceptIndex": 0
+          }
+        },
+        "label": {
+          "use": "property",
+          "autogenerate": {
+            "conceptIndex": 0
+          }
+        },
+        "color": {
+          "syncModels": ["marker_colorlegend"],
+          "autogenerate": {
+            "conceptIndex": 0,
+            "conceptType": "entity_set"
+          }
+        }
+      },
+      "marker_colorlegend": {
+        "space": ["entities_colorlegend"],
+        "label": {
+          "use": "property",
+          "which": "name"
+        },
+        "hook_rank": {
+          "use": "property",
+          "which": "rank"
+        },
+        "hook_geoshape": {
+          "use": "property",
+          "which": "shape_lores_svg"
+        }
       }
     },
     locale: {},
