@@ -325,6 +325,8 @@ const BarRankChart = Vizabi.Component.extend({
       if (rightEdgeOfLeftText > this.width - headerMargin.right) {
         headerTitleText.text(name);
       }
+    } else {
+      headerTitleText.text(name);
     }
 
     const headerTitleBBox = headerTitle.node().getBBox();
