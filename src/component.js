@@ -152,6 +152,7 @@ const BarRankChart = Vizabi.Component.extend({
 
   resize() {
     this.draw(true);
+    this._drawColors();
   },
 
   loadData() {
