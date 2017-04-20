@@ -5,7 +5,8 @@
   "scripts": {
     "link": "npm link ../vizabi",
     "start": "webpack-dev-server",
-    "build": "cross-env NODE_ENV=production webpack --progress"
+    "build": "cross-env NODE_ENV=production webpack --progress",
+    "deploy": "tool-deploy"
   },
   "main": "build/dist/barrankchart.js",
   "files": [
@@ -23,9 +24,7 @@
   },
   "homepage": "https://github.com/vizabi/vizabi-barrankchart#readme",
   "devDependencies": {
-    "compare-version": "^0.1.2",
     "cross-env": "^4.0.0",
-    "shelljs": "^0.7.7",
     "vizabi": "^0.21.0-20",
     "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler"
   }
