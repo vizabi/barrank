@@ -206,7 +206,7 @@ const BarRankChart = Vizabi.Component.extend({
       const ctx = utils.makeAbsoluteContext(this, this.farthestViewportElement);
       const coord = ctx(rect.x - 10, rect.y + rect.height + 10);
       _this.parent.findChildByName('gapminder-datanotes')
-        .setHook('axis_y')
+        .setHook('axis_x')
         .show()
         .setPos(coord.x, coord.y);
     });
