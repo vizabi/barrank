@@ -7,7 +7,7 @@ const iconWarn = Vizabi.iconset.warn;
 const COLOR_BLACKISH = "#333";
 const COLOR_WHITEISH = "#fdfdfd";
 
-const BarRankChart = Vizabi.Component.extend({
+const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
   /**
    * Initializes the component (Bar Chart).
@@ -17,7 +17,7 @@ const BarRankChart = Vizabi.Component.extend({
    */
   init(config, context) {
 
-    this.name = 'barrankchart-component';
+    this.name = 'barrankchart';
     this.template = require('./template.html');
 
     //define expected models for this component
