@@ -1,6 +1,8 @@
 import "./styles.scss";
 import component from "./component";
 
+const VERSION_INFO = { version: __VERSION, build: __BUILD };
+
 export default Vizabi.Tool.extend("BarRankChart", {
 
   // Run when the tool is created
@@ -153,5 +155,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
       },
       presentation: false
     }
-  }
+  },
+
+  versionInfo: VERSION_INFO
 });
