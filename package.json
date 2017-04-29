@@ -10,7 +10,7 @@
   },
   "main": "build/dist/barrankchart.js",
   "files": [
-    "build/dist"
+    "build"
   ],
   "repository": {
     "type": "git",
