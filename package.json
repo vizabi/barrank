@@ -8,7 +8,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress",
     "deploy": "tool-deploy"
   },
-  "main": "build/dist/barrankchart.js",
+  "main": "build/barrankchart.js",
   "files": [
     "build"
   ],
