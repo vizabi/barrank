@@ -637,7 +637,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       });
 
     this.barContainer.selectAll('.vzb-br-bar>text')
-      .style('fill', ({ entity }) => this._getDarkerColor(this.values.color[entity]));
+      .style('fill', ({ entity }) => this._getDarkerColor(this.values.color[entity] || null));
   },
 
   _getColor(value) {
