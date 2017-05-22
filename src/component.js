@@ -194,8 +194,10 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       .on('mouseover', () => this._updateDoubtOpacity(1))
       .on('mouseout', () => this._updateDoubtOpacity());
 
+    const conceptPropsX = this.model.marker.axis_x.getConceptprops();
     utils.setIcon(this.infoEl, iconQuestion)
-      .select('svg').attr('width', 0).attr('height', 0);
+      .select('svg').attr('width', 0).attr('height', 0)
+      .style('opacity', Number(Boolean(conceptPropsX.description || conceptPropsX.sourceLink)));
 
     this.infoEl.on('click', () => {
       this.parent.findChildByName('gapminder-datanotes').pin();
