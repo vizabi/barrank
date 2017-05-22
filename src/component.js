@@ -4,8 +4,8 @@ const axisWithLabelPicker = Vizabi.helpers['d3.axisWithLabelPicker'];
 const iconQuestion = Vizabi.iconset.question;
 const iconWarn = Vizabi.iconset.warn;
 
-const COLOR_BLACKISH = "#333";
-const COLOR_WHITEISH = "#fdfdfd";
+const COLOR_BLACKISH = "rgb(51, 51, 51)";
+const COLOR_WHITEISH = "rgb(253, 253, 253)";
 
 const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
@@ -162,7 +162,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     // sort the data (also sets this.total)
     const xAxisValues = this.values.axis_x;
     if (!Object.keys(xAxisValues).length) return false;
-    
+
     this.sortedEntities = this._sortByIndicator(xAxisValues);
 
     this.header
@@ -416,6 +416,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
     this._resizeSvg();
     this._scroll(duration);
+    this._drawColors();
 
 
     const { barRectMargin, barValueMargin, scrollMargin, margin } = this.activeProfile;
@@ -622,18 +623,16 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
     this.barContainer.selectAll('.vzb-br-bar>rect')
       .each(function({ entity }) {
-        const self = d3.select(this);
-        const color = _this.values.color[entity];
+        const rect = d3.select(this);
 
-        if (!color && color !== 0) {
-          self
-            .style('fill', COLOR_WHITEISH)
-            .attr('stroke', COLOR_BLACKISH);
-        } else {
-          self
-            .style('fill', _this._getColor(color))
-            .attr('stroke', 'transparent');
-        }
+        const colorValue = _this.values.color[entity];
+        const isColorValid = colorValue || colorValue === 0;
+
+        const fillColor = isColorValid ? String(_this._getColor(colorValue)) : COLOR_WHITEISH;
+        const strokeColor = isColorValid ? 'transparent' : COLOR_BLACKISH;
+
+        rect.style('fill') !== fillColor && rect.style('fill', fillColor);
+        rect.style('stroke') !== strokeColor && rect.style('stroke', strokeColor);
       });
 
     this.barContainer.selectAll('.vzb-br-bar>text')
