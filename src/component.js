@@ -162,7 +162,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     // sort the data (also sets this.total)
     const xAxisValues = this.values.axis_x;
     if (!Object.keys(xAxisValues).length) return false;
-    
+
     this.sortedEntities = this._sortByIndicator(xAxisValues);
 
     this.header
@@ -427,7 +427,6 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     const rightEdge = this.width
       - margin.right
       - margin.left
-      - this._getWidestLabelWidth()
       - barRectMargin
       - scrollMargin;
     this.xScale.range([0, rightEdge]);
@@ -441,26 +440,27 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     }
 
     if (zeroValueOffset < 0) {
-      this.xScale.range([0, rightEdge - Math.abs(zeroValueOffset)]);
+      this.xScale.range([0, rightEdge - Math.abs(zeroValueOffset) - this._getWidestLabelWidth()]);
       zeroValueOffset = (scaleType === "log" ? 0 : this.xScale(0)) || 0;
     }
 
     const barWidth = (value) => this.xScale(value) - zeroValueOffset;
+    const isLtrValue = value => value >= 0;
 
-    const labelAnchor = ltr ? 'end' : 'start';
-    const valueAnchor = ltr ? 'start' : 'end';
+    const labelAnchor = value => isLtrValue(value) ? 'end' : 'start';
+    const valueAnchor = value => isLtrValue(value)? 'start' : 'end';
 
-    const labelX = ltr ?
+    const labelX = value => isLtrValue(value) ?
       (margin.left + shift) :
       (this.width - shift - scrollMargin - margin.right);
 
-    const barX = ltr ?
-      (labelX + barRectMargin) :
-      (labelX - barRectMargin);
+    const barX = value => isLtrValue(value) ?
+      (labelX(value) + barRectMargin) :
+      (labelX(value) - barRectMargin);
 
-    const valueX = ltr ?
-      (barX + barValueMargin) :
-      (barX - barValueMargin);
+    const valueX = value => isLtrValue(value) ?
+      (barX(value) + barValueMargin) :
+      (barX(value) - barValueMargin);
 
     const isLabelBig = (this._getWidestLabelWidth(true) + (ltr ? margin.left : margin.right)) < shift;
     this.sortedEntities.forEach((bar) => {
@@ -468,9 +468,9 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
       if (force || presentationModeChanged || bar.isNew) {
         bar.barLabel
-          .attr('x', labelX)
+          .attr('x', labelX(value))
           .attr('y', this.activeProfile.barHeight / 2)
-          .attr('text-anchor', labelAnchor)
+          .attr('text-anchor', labelAnchor(value))
           .text(isLabelBig ? bar.labelFull : bar.labelSmall);
 
         bar.barRect
@@ -479,9 +479,9 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
           .attr('height', this.activeProfile.barHeight);
 
         bar.barValue
-          .attr('x', valueX)
+          .attr('x', valueX(value))
           .attr('y', this.activeProfile.barHeight / 2)
-          .attr('text-anchor', valueAnchor);
+          .attr('text-anchor', valueAnchor(value));
       }
 
       if (force || bar.changedWidth || presentationModeChanged) {
@@ -494,7 +494,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         }
 
         bar.barRect
-          .attr('x', barX - (value < 0 ? width : 0));
+          .attr('x', barX(value) - (value < 0 ? width : 0));
 
         if (force || bar.changedValue) {
           bar.barValue
