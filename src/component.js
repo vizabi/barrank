@@ -469,7 +469,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.sortedEntities.forEach((bar) => {
       const { value } = bar;
 
-      if (force || presentationModeChanged || bar.isNew) {
+      if (force || presentationModeChanged || bar.isNew || bar.changedValue) {
         bar.barLabel
           .attr('x', labelX(value))
           .attr('y', this.activeProfile.barHeight / 2)
