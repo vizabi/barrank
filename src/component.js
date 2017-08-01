@@ -179,7 +179,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       );
 
     // new scales and axes
-    this.xScale = this.model.marker.axis_x.getScale();
+    this.xScale = this.model.marker.axis_x.getScale().copy();
     this.cScale = this.model.marker.color.getScale();
 
     utils.setIcon(this.dataWarningEl, iconWarn)
@@ -425,33 +425,29 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     const { axis_x } = this.model.marker;
     const limits = axis_x.getLimits(axis_x.which);
     const ltr = Math.abs(limits.max) >= Math.abs(limits.min);
+    const hasNegativeValues = ltr ? limits.min < 0 : limits.max > 0;
 
 
-    const rightEdge = this.width
-      - margin.right
-      - margin.left
-      - barRectMargin
-      - scrollMargin;
-    this.xScale.range([0, rightEdge]);
+    const rightEdge = (
+        this.width
+        - margin.right
+        - margin.left
+        - barRectMargin
+        - scrollMargin
+        - (hasNegativeValues ? 0 : this._getWidestLabelWidth())
+      ) / (hasNegativeValues ? 2 : 1);
 
-    const scaleType = this.model.marker.axis_x.scaleType;
-    let zeroValueOffset = (scaleType === "log" ? 0 : this.xScale(0)) || 0;
-    let shift = this._getWidestLabelWidth();
+    this.xScale
+      .domain([0, Math.max(...this.xScale.domain())])
+      .range([0, rightEdge]);
 
-    if (zeroValueOffset > ((ltr ? margin.left : margin.right) + this._getWidestLabelWidth())) {
-      shift = zeroValueOffset;
-    }
+    const shift = hasNegativeValues ? rightEdge : this._getWidestLabelWidth();
 
-    if (zeroValueOffset < 0) {
-      this.xScale.range([0, rightEdge - Math.abs(zeroValueOffset) - this._getWidestLabelWidth()]);
-      zeroValueOffset = (scaleType === "log" ? 0 : this.xScale(0)) || 0;
-    }
-
-    const barWidth = (value) => this.xScale(value) - zeroValueOffset;
-    const isLtrValue = value => value >= 0;
+    const barWidth = (value) => this.xScale(value);
+    const isLtrValue = value => ltr ? value >= 0 : value > 0;
 
     const labelAnchor = value => isLtrValue(value) ? 'end' : 'start';
-    const valueAnchor = value => isLtrValue(value)? 'start' : 'end';
+    const valueAnchor = value => isLtrValue(value) ? 'start' : 'end';
 
     const labelX = value => isLtrValue(value) ?
       (margin.left + shift) :
@@ -726,7 +722,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
   },
 
   _updateOpacity() {
-    const { model: { marker } } =  this;
+    const { model: { marker } } = this;
 
     const OPACITY_HIGHLIGHT_DEFAULT = 1;
     const {
