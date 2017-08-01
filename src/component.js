@@ -438,8 +438,12 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       ) / (hasNegativeValues ? 2 : 1);
 
     this.xScale
-      .domain([0, Math.max(...this.xScale.domain())])
       .range([0, rightEdge]);
+    
+    if (this.model.marker.axis_x.scaleType !== "log") {
+      this.xScale
+        .domain([0, Math.max(...this.xScale.domain())]);
+    }
 
     const shift = hasNegativeValues ? rightEdge : this._getWidestLabelWidth();
 
