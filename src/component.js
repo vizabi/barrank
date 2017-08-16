@@ -488,7 +488,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       }
 
       if (force || bar.changedWidth || presentationModeChanged) {
-        const width = Math.max(0, value && barWidth(Math.abs(value)));
+        const width = Math.max(0, value && barWidth(Math.abs(value))) || 0;
 
         if (force || bar.changedWidth || presentationModeChanged) {
           bar.barRect
