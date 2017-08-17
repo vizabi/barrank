@@ -115,7 +115,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.barSvg = this.element.select('.vzb-br-bars-svg');
     this.barContainer = this.element.select('.vzb-br-bars');
     this.dataWarningEl = this.element.select('.vzb-data-warning');
-    this.wScale = d3.scale.linear()
+    this.wScale = d3.scaleLinear()
       .domain(this.model.ui.datawarning.doubtDomain)
       .range(this.model.ui.datawarning.doubtRange);
 
