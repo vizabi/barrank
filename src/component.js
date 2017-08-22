@@ -560,7 +560,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         const labelFull = _this.values.label[d.entity];
         const labelSmall = labelFull.length < 12 ? labelFull : `${labelFull.substring(0, 9)}...`;
 
-        const selectedLabel = self.select('vzb-br-label');
+        const selectedLabel = self.select('.vzb-br-label');
         const barLabel = selectedLabel.size() ?
           selectedLabel :
           self.append('text')
