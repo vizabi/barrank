@@ -53,23 +53,17 @@ export default Vizabi.Tool.extend("BarRankChart", {
    */
   default_model: {
     "state": {
-      "time": {
-        "autogenerate": {
-          "data": "data",
-          "conceptIndex": 0,
-          "conceptType": "time"
-        }
-      },
+      "time": {},
       "entities": {
-        "autogenerate": {
-          "data": "data",
-          "conceptIndex": 0
+        "autoconfig": {
+          "type": "entity_domain",
+          "excludeIDs": ["tag"]
         }
       },
       "entities_colorlegend": {
-        "autogenerate": {
-          "data": "data",
-          "conceptIndex": 0
+        "autoconfig": {
+          "type": "entity_domain",
+          "excludeIDs": ["tag"]
         }
       },
       "entities_tags": {},
@@ -79,49 +73,35 @@ export default Vizabi.Tool.extend("BarRankChart", {
         "hook_parent": {}
       },
       "entities_allpossible": {
-        "autogenerate": {
-          "data": "data",
-          "conceptIndex": 0
+        "autoconfig": {
+          "type": "entity_domain",
+          "excludeIDs": ["tag"]
         }
       },
       "marker_allpossible": {
         "space": ["entities_allpossible"],
         "label": {
-          "use": "property",
-          "autogenerate": {
-            "conceptIndex": 0
-          }
+          "use": "property"
         }
       },
       "marker": {
         "space": ["entities", "time"],
         "axis_x": {
           "use": "indicator",
-          "allow": { scales: ["linear", "log"] },
-          "autogenerate": {
-            "conceptIndex": 0,
-            "conceptType": "measure"
-          }
+          "allow": { scales: ["linear", "log"] }
         },
         "axis_y": {
           "use": "property",
           "allow": { scales: ["ordinal", "nominal"] },
-          "autogenerate": {
-            "conceptIndex": 0
+          "autoconfig": {
+            "type": "entity_domain"
           }
         },
         "label": {
-          "use": "property",
-          "autogenerate": {
-            "conceptIndex": 0
-          }
+          "use": "property"
         },
         "color": {
-          "syncModels": ["marker_colorlegend"],
-          "autogenerate": {
-            "conceptIndex": 0,
-            "conceptType": "entity_set"
-          }
+          "syncModels": ["marker_colorlegend"]
         }
       },
       "marker_colorlegend": {
