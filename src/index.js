@@ -76,6 +76,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
         space: ["entities_tags"],
         label: {
           use: "property",
+          which: "name"
         },
         hook_parent: {}
       },
@@ -99,6 +100,9 @@ export default Vizabi.Tool.extend("BarRankChart", {
         "space": ["entities", "time"],
         "axis_x": {
           "use": "indicator",
+          "autoconfig": {
+            "type": "measure"
+          },
           "allow": { scales: ["linear", "log"] }
         },
         "axis_y": {
@@ -116,7 +120,8 @@ export default Vizabi.Tool.extend("BarRankChart", {
           }
         },
         "color": {
-          "syncModels": ["marker_colorlegend"]
+          "syncModels": ["marker_colorlegend"],
+          "autoconfig": {}
         }
       },
       "marker_colorlegend": {
