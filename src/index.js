@@ -53,7 +53,11 @@ export default Vizabi.Tool.extend("BarRankChart", {
    */
   default_model: {
     "state": {
-      "time": {},
+      "time": {
+        "autoconfig": {
+          "type": "time"
+        }
+      },
       "entities": {
         "autoconfig": {
           "type": "entity_domain",
