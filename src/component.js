@@ -22,20 +22,20 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
     //define expected models for this component
     this.model_expects = [{
-      name: 'time',
-      type: 'time'
+      name: "time",
+      type: "time"
     }, {
-      name: 'entities',
-      type: 'entities'
+      name: "entities",
+      type: "entities"
     }, {
-      name: 'marker',
-      type: 'model'
+      name: "marker",
+      type: "marker"
     }, {
-      name: 'locale',
-      type: 'locale'
+      name: "locale",
+      type: "locale"
     }, {
-      name: 'ui',
-      type: 'ui'
+      name: "ui",
+      type: "ui"
     }];
 
     this.model_binds = {
