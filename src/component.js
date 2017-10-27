@@ -506,6 +506,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       }
 
       if (force || bar.changedIndex || presentationModeChanged) {
+        !duration && bar.self.interrupt();
         (duration ? bar.self.transition().duration(duration).ease(d3.easeLinear) : bar.self)
           .attr('transform', `translate(0, ${this._getBarPosition(bar.index)})`);
       }
