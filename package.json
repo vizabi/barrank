@@ -25,6 +25,7 @@
   "homepage": "https://github.com/vizabi/vizabi-barrankchart#readme",
   "devDependencies": {
     "cross-env": "^5.0.0",
+    "css.escape": "^1.5.1",
     "vizabi": "^0.23.0-28",
     "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler"
   }

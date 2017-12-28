@@ -1,3 +1,4 @@
+import cssEscape from "css.escape";
 const utils = Vizabi.utils;
 
 const axisWithLabelPicker = Vizabi.helpers['d3.axisWithLabelPicker'];
@@ -24,9 +25,6 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.model_expects = [{
       name: "time",
       type: "time"
-    }, {
-      name: "entities",
-      type: "entities"
     }, {
       name: "marker",
       type: "marker"
@@ -137,10 +135,17 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
    * Both model and DOM are ready
    */
   ready() {
+    this.TIMEDIM = this.model.time.getDimension();
+    this.KEYS = utils.unique(this.model.marker._getAllDimensions({ exceptType: "time" }));
+    this.KEY = this.KEYS.join(",");
+    this.dataKeys = this.model.marker.getDataKeysPerHook();
+    this.labelNames = this.model.marker.getLabelHookNames();
+
     this.model.marker.getFrame(this.model.time.value, values => {
       this.values = values;
 
       if (this.values) {
+        this.markerKeys = this.model.marker.getKeys();
         if (this.loadData()) {
           this.draw(true);
           this._updateOpacity();
@@ -163,7 +168,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     const xAxisValues = this.values.axis_x;
     if (!Object.keys(xAxisValues).length) return false;
 
-    this.sortedEntities = this._sortByIndicator(xAxisValues);
+    this.sortedEntities = this._sortByIndicator(xAxisValues, this.dataKeys.axis_x);
 
     this.header
       .select('.vzb-br-title')
@@ -392,10 +397,11 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
   },
 
   drawData(duration = 0, force = false) {
+    const KEY = this.KEY;
     // update the shown bars for new data-set
     this._createAndDeleteBars(
       this.barContainer.selectAll('.vzb-br-bar')
-        .data(this.sortedEntities, d => d.entity)
+        .data(this.sortedEntities, d => d[KEY])
     );
 
 
@@ -474,7 +480,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
           .attr('x', labelX(value))
           .attr('y', this.activeProfile.barHeight / 2)
           .attr('text-anchor', labelAnchor(value))
-          .text(isLabelBig ? bar.labelFull : bar.labelSmall);
+          .text(isLabelBig ? bar.label : bar.labelSmall);
 
         bar.barRect
           .attr('rx', this.activeProfile.barHeight / 4)
@@ -533,8 +539,14 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     }
   },
 
+  _getLabelText(values, labelNames, d) {
+    return this.KEYS.map(key => values[labelNames[key]] ? values[labelNames[key]][d[key]] : d[key]).join(", ");
+  },
+
   _createAndDeleteBars(updatedBars) {
     const _this = this;
+    const KEYS = this.KEYS;
+    const dataKeys = this.dataKeys;
 
     // TODO: revert this commit after fixing https://github.com/vizabi/vizabi/issues/2450
     const [entity] = this.sortedEntities;
@@ -542,12 +554,13 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       this._entityLabels[entity.entity] = entity.label;
     }
 
-    const localeChanged = this._entityLabels[entity.entity] !== this.values.label[entity.entity]
+    const label = this._getLabelText(this.values, this.labelNames, entity.entity)
+    const localeChanged = this._entityLabels[entity.entity] !== label
       && this.model.locale.id !== this._localeId;
 
     if (localeChanged) {
       this._localeId = this.model.locale.id;
-      this._entityLabels[entity.entity] = this.values.label[entity.entity];
+      this._entityLabels[entity.entity] = label;
     }
 
     // remove groups for entities that are gone
@@ -558,8 +571,8 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       .each(function(d) {
         const self = d3.select(this);
 
-        const labelFull = _this.values.label[d.entity];
-        const labelSmall = labelFull.length < 12 ? labelFull : `${labelFull.substring(0, 9)}...`;
+        const label = d.label;
+        const labelSmall = label.length < 12 ? label : `${label.substring(0, 9)}...`;//…
 
         const selectedLabel = self.select('.vzb-br-label');
         const barLabel = selectedLabel.size() ?
@@ -568,13 +581,12 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
             .attr('class', 'vzb-br-label')
             .attr('dy', '.325em');
 
-        const labelFullWidth = barLabel.text(labelFull).node().getBBox().width;
+        const labelWidth = barLabel.text(label).node().getBBox().width;
         const labelSmallWidth = barLabel.text(labelSmall).node().getBBox().width;
 
         Object.assign(d, {
-          labelFullWidth,
+          labelWidth,
           labelSmallWidth,
-          labelFull,
           labelSmall,
           barLabel,
         });
@@ -582,12 +594,12 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         if (!localeChanged) {
           self
             .attr('class', 'vzb-br-bar')
-            .classed('vzb-selected', _this.model.marker.isSelected(d))
-            .attr('id', `vzb-br-bar-${d.entity}-${_this._id}`)
-            .on('mousemove', d => _this.model.marker.highlightMarker(d))
+            .classed('vzb-selected', _this.model.marker.isSelected(d.entity))
+            .attr('id', `vzb-br-bar-${utils.getKey(d.entity, KEYS)}-${_this._id}`)
+            .on('mousemove', d => _this.model.marker.highlightMarker(d.entity))
             .on('mouseout', () => _this.model.marker.clearHighlighted())
             .on('click', d => {
-              _this.model.marker.selectMarker(d);
+              _this.model.marker.selectMarker(d.entity);
             });
 
           const barRect = self.append('rect')
@@ -609,8 +621,8 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
   },
 
   _getWidestLabelWidth(big = false) {
-    const widthKey = big ? 'labelFullWidth' : 'labelSmallWidth';
-    const labelKey = big ? 'labelFull' : 'labelSmall';
+    const widthKey = big ? 'labelWidth' : 'labelSmallWidth';
+    const labelKey = big ? 'label' : 'labelSmall';
 
     const bar = this.sortedEntities
       .reduce((a, b) => a[widthKey] < b[widthKey] ? b : a);
@@ -624,12 +636,13 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
   _drawColors() {
     const _this = this;
+    const dataKeys = this.dataKeys;
 
     this.barContainer.selectAll('.vzb-br-bar>rect')
       .each(function({ entity }) {
         const rect = d3.select(this);
 
-        const colorValue = _this.values.color[entity];
+        const colorValue = _this.values.color[utils.getKey(entity, dataKeys.color)];
         const isColorValid = colorValue || colorValue === 0;
 
         const fillColor = isColorValid ? String(_this._getColor(colorValue)) : COLOR_WHITEISH;
@@ -640,7 +653,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       });
 
     this.barContainer.selectAll('.vzb-br-bar>text')
-      .style('fill', ({ entity }) => this._getDarkerColor(this.values.color[entity] || null));
+      .style('fill', ({ entity }) => this._getDarkerColor(this.values.color[utils.getKey(entity, dataKeys.color)] || null));
   },
 
   _getColor(value) {
@@ -671,11 +684,15 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
   _entities: {},
 
-  _sortByIndicator(values) {
-    return Object.keys(values).map(entity => {
-      const cached = this._entities[entity];
-      const value = values[entity];
-      const label = this.values.label[entity];
+  _sortByIndicator(values, dataKey) {
+    const KEYS = this.KEYS;
+    const KEY = this.KEY;
+    const dataKeys = this.dataKeys;
+    return this.markerKeys.map(entity => {
+      const key = utils.getKey(entity, KEYS);
+      const cached = this._entities[key];
+      const value = values[utils.getKey(entity, dataKey)];
+      const label = this._getLabelText(this.values, this.labelNames, entity);
       const formattedValue = this._formatter(value);
 
       if (cached) {
@@ -689,11 +706,12 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         });
       }
 
-      return this._entities[entity] = {
+      return this._entities[key] = {
         entity,
         value,
+        label,
         formattedValue,
-        [this.model.entities.dim]: entity,
+        [this.KEY]: key,
         changedValue: true,
         changedWidth: true,
         isNew: true
@@ -707,7 +725,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
   },
 
   _selectBars() {
-    const entityDim = this.model.entities.dim;
+    const KEYS = this.KEYS;
     const selected = this.model.marker.select;
 
     // unselect all bars
@@ -719,7 +737,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       this.barContainer.classed('vzb-dimmed-selected', true);
       selected.forEach(selectedBar => {
         this.barContainer
-          .select(`#vzb-br-bar-${selectedBar[entityDim]}-${this._id}`)
+          .select(`#vzb-br-bar-${cssEscape(utils.getKey(selectedBar, KEYS))}-${this._id}`)
           .classed('vzb-selected', true);
       });
     }
@@ -749,12 +767,12 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
     this.barContainer.selectAll('.vzb-br-bar')
       .style('opacity', d => {
-        if (someHighlighted && marker.isHighlighted(d)) {
+        if (someHighlighted && marker.isHighlighted(d.entity)) {
           return OPACITY_HIGHLIGHT_DEFAULT;
         }
 
         if (someSelected) {
-          return marker.isSelected(d) ? OPACITY_REGULAR : OPACITY_SELECT_DIM;
+          return marker.isSelected(d.entity) ? OPACITY_REGULAR : OPACITY_SELECT_DIM;
         }
 
         if (someHighlighted) {
@@ -774,6 +792,10 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       )
     );
   },
+
+  _getLabelText(values, labelNames, d) {
+    return this.KEYS.map(key => values[labelNames[key]] ? values[labelNames[key]][d[key]] : d[key]).join(", ");    
+  }
 
 });
 
