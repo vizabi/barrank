@@ -13,7 +13,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
     this.components = [{
       component: component,
       placeholder: ".vzb-tool-viz",
-      model: ["state.time", "state.entities", "state.marker", "locale", "ui"]
+      model: ["state.time", "state.marker", "locale", "ui"]
     }, {
       component: Vizabi.Component.get("timeslider"),
       placeholder: ".vzb-tool-timeslider",
@@ -109,13 +109,13 @@ export default Vizabi.Tool.extend("BarRankChart", {
           },
           "allow": { scales: ["linear", "log"] }
         },
-        "axis_y": {
-          "use": "property",
-          "allow": { scales: ["ordinal", "nominal"] },
-          "autoconfig": {
-            "type": "entity_domain"
-          }
-        },
+        // "axis_y": {
+        //   "use": "property",
+        //   "allow": { scales: ["ordinal", "nominal"] },
+        //   "autoconfig": {
+        //     "type": "entity_domain"
+        //   }
+        // },
         "label": {
           "use": "property",
           "autoconfig": {
@@ -153,7 +153,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
       },
       "buttons": ["colors", "find", "show", "moreoptions", "fullscreen", "presentation"],
       "dialogs": {
-        "popup": ["timedisplay", "colors", "find", "axes", "show", "moreoptions"],
+        "popup": ["timedisplay", "colors", "find", "show", "moreoptions"],
         "sidebar": ["timedisplay", "colors", "find"],
         "moreoptions": ["opacity", "speed", "colors", "presentation", "about"]
       },
