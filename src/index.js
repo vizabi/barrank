@@ -84,22 +84,6 @@ export default Vizabi.Tool.extend("BarRankChart", {
         },
         hook_parent: {}
       },
-      "entities_allpossible": {
-        "autoconfig": {
-          "type": "entity_domain",
-          "excludeIDs": ["tag"]
-        }
-      },
-      "marker_allpossible": {
-        "space": ["entities_allpossible"],
-        "label": {
-          "use": "property",
-          "autoconfig": {
-            "includeOnlyIDs": ["name"],
-            "type": "string"
-          }
-        }
-      },
       "marker": {
         "space": ["entities", "time"],
         "axis_x": {
@@ -151,9 +135,9 @@ export default Vizabi.Tool.extend("BarRankChart", {
         doubtDomain: [],
         doubtRange: []
       },
-      "buttons": ["colors", "find", "show", "moreoptions", "fullscreen", "presentation"],
+      "buttons": ["colors", "find", "moreoptions", "fullscreen", "presentation"],
       "dialogs": {
-        "popup": ["timedisplay", "colors", "find", "show", "moreoptions"],
+        "popup": ["timedisplay", "colors", "find", "moreoptions"],
         "sidebar": ["timedisplay", "colors", "find"],
         "moreoptions": ["opacity", "speed", "colors", "presentation", "about"]
       },
