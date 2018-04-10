@@ -2,7 +2,7 @@ language: node_js
 dist: trusty
 sudo: true
 node_js:
-- 7.5.0
+- 8
 addons:
   apt:
     packages:
@@ -18,6 +18,11 @@ cache:
   directories:
   - node_modules
 before_install:
+- ssh-keyscan -H $TOOLSPAGE_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
+- openssl aes-256-cbc -K $encrypted_da0ce46cb138_key -iv $encrypted_da0ce46cb138_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
 - npm install -g npm@latest
 - sudo pip install s3cmd
 before_script:
@@ -27,12 +32,17 @@ before_script:
 script:
 - npm run deploy
 deploy:
+- provider: npm
   skip_cleanup: true
-  provider: npm
-  email: kgrpwnz@gmail.com
+  email: konzeptmeister@gmail.com
   api_key:
-    secure: ZRbYH5ePlhQ5cgMsjT7xk1D5YU3oQAPI1G4ZgBYqHclqKhHEYEplG+Eud9CfetZSN2nLozIi+A66Ss0y4JH9+oEXLlevkrxVUS5WHseRD8b1z3ZM/6U/9lrMybNhdzDv2Z46DmXgverjExmbLZ9TtXSon2hZR0ir4z1SyiSWdrysKBu3V2MIMGDDBTw2RvE5wH+5EX6m9lLxD5YiEkaPzsDncElmFlH2ve/LE4LWkKmJn6LsuN9dMNRKB2oc6xUvYntmCV7pHEnXjatu+R4Ro/xXUji294NSNxx1AYAaCmSNWpbe6L5Z0ZPdaCyQJBsR+7N4DIjuligNm0ZXgEqn91IMeqDC8GkoXEs+xYh9//7vR2BHhPC1EClEXlqhaP+qRj+yrwpC/bRfKxvIFDxlYtVhU4qr3WDR5yR0ho7w8Hi0gOmJwi7PoZ19ApeFRvc1pNZphhPTghJRqA0idoziZomjvlxht1Zcl1e9p5/IDmrzJCYe3OdcFurhettxW0WUBmuaOPumwFoTxWCzUUz5azkxJq7DrwgY46/c/LsUI2Tq4pO4USI91Uj2eqarR7Ha3LTaLyuW/fA6QW+Xgcladz7MoEipEclIlx1NH75RgcPkevZ1ODnvvC5dFPkVRY8vqlFUVX9tjpOfslSnhVXVhxBr0hcVuRKFFXO2yDHxyc4=
+    secure: ZsUlLcVhM54i4L5K/LJHyN1RrZDiks1Ac0JdcUlBomNYO/tn9x/5fmoCBG6iqBMjjXGak6a7zOfjOA2aQ2QeaL8PoTcYna6X5SHWqxlTCIO5CIpW5/YNhIm0CYM/z073Lk5s1xXTCrCuzSyYZohNojfLUvs6Z8GCKtxSA+ioDagFcoDF1tSkgeZ6fTT1IYmrU428u8iM33ZdVbl2/7g6UTlZcEEcPb/a0a1MVDgY0iwsjF9iDDxDOxw8yLibfvXjJrHMEwQpIpNpg12BiS8emvZ0xbieQzpqhRPVLy+HcrdsDqwByoxEI7i5ao+tcKI9qfY4fzIDMAj7BJLhy+L8yyWONTJ73evOo75zJ8Z96YD7LmNQqm0UkN0S0tDZ7/UeqdCf/W+zdCNTyaIk1PZ1SUovCJVSN17SuF6NQif3Jhto75SRw/c2zbenzoDmUo+4cesRT7xhqkuskn7FBWCsu6+BTMDd4kEJ/TWNVgNG7QZlj/VoXb/qcHvt+TOBzOpnh6rXnFOOXzVY4u58jacDYx6/JUVpLZZ95Em+yUJxPwx+dt7UQBNGNOUXXzWa2rnmSSPFhSlYA5mVupg9jz/HiOcPJpwH0m9Jln7IEZCEyenCBK+F6IqSO07YDCRLQfeV0miPVgdHA3Y6bogrpNoyPR1ldXmuD/cWBHMaWSlfZkE=
   on:
     branch: develop
-    node: 7.5.0
+    node: 8
     condition: "-e /tmp/deployment.flag"
+- provider: script
+  skip_cleanup: true
+  script: ssh $TOOLSPAGE_USER@$TOOLSPAGE_HOST 'sh /home/root/redeploy.sh "$TRAVIS_REPO_SLUG"'
+  on:
+    branch: develop
