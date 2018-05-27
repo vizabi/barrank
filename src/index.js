@@ -29,7 +29,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
     }, {
       component: Vizabi.Component.get("treemenu"),
       placeholder: ".vzb-tool-treemenu",
-      model: ["state.marker", "state.marker_tags", "state.time", "locale"]
+      model: ["state.marker", "state.time", "locale"]
     }, {
       component: Vizabi.Component.get("datanotes"),
       placeholder: ".vzb-tool-datanotes",
@@ -69,20 +69,6 @@ export default Vizabi.Tool.extend("BarRankChart", {
           "type": "entity_domain",
           "excludeIDs": ["tag"]
         }
-      },
-      entities_tags: {
-        "autoconfig": {
-          "type": "entity_domain",
-          "includeOnlyIDs": ["tag"]
-        }
-      },
-      marker_tags: {
-        space: ["entities_tags"],
-        label: {
-          use: "property",
-          which: "name"
-        },
-        hook_parent: {}
       },
       "marker": {
         "space": ["entities", "time"],
