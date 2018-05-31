@@ -113,6 +113,13 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.barSvg = this.element.select('.vzb-br-bars-svg');
     this.barContainer = this.element.select('.vzb-br-bars');
     this.dataWarningEl = this.element.select('.vzb-data-warning');
+    this.tooltipSvg = this.element.select(".vzb-br-tooltip-svg");
+    this.tooltip = this.element.select(".vzb-br-tooltip");
+    this.missedPositionsWarningEl = this.element.select('.vzb-data-warning-missed-positions');
+    const _interact = this._createTooltipInteract(this.element, this.missedPositionsWarningEl);
+    this.missedPositionsWarningEl
+      .on("mouseover", _interact.mouseOver)
+      .on("mouseout", _interact.mouseOut);
     this.wScale = d3.scaleLinear()
       .domain(this.model.ui.datawarning.doubtDomain)
       .range(this.model.ui.datawarning.doubtRange);
@@ -166,8 +173,10 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.translator = this.model.locale.getTFunction();
     // sort the data (also sets this.total)
     const xAxisValues = this.values.axis_x;
-    if (!Object.keys(xAxisValues).length) return false;
+    const valuesCount = Object.keys(xAxisValues).length;
+    if (!valuesCount) return false;
 
+    this.nullValuesCount = 0;
     this.sortedEntities = this._sortByIndicator(xAxisValues, this.dataKeys.axis_x);
 
     this.header
@@ -198,6 +207,12 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       .on('click', () => this.parent.findChildByName('gapminder-datawarning').toggle())
       .on('mouseover', () => this._updateDoubtOpacity(1))
       .on('mouseout', () => this._updateDoubtOpacity());
+
+    this.missedPositionsWarningEl
+      .classed("vzb-hidden", (1 - this.nullValuesCount / valuesCount) > 0.85)
+      .select("text")
+      .attr("data-text", this.translator("hints/barrank/missedPositionsTooltip"))
+      .text(this.translator("hints/barrank/missedPositionsWarning"))
 
     const conceptPropsX = this.model.marker.axis_x.getConceptprops();
     utils.setIcon(this.infoEl, iconQuestion)
@@ -242,7 +257,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
   drawAxes(duration = 0) {
     const profiles = {
       small: {
-        margin: { top: 60, right: 5, left: 5, bottom: 20 },
+        margin: { top: 60, right: 20, left: 5, bottom: 20 },
         headerMargin: { top: 10, right: 20, bottom: 20, left: 20 },
         infoElHeight: 16,
         infoElMargin: 5,
@@ -253,7 +268,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         scrollMargin: 20,
       },
       medium: {
-        margin: { top: 60, right: 5, left: 5, bottom: 20 },
+        margin: { top: 60, right: 25, left: 5, bottom: 20 },
         headerMargin: { top: 10, right: 20, bottom: 20, left: 20 },
         infoElHeight: 16,
         infoElMargin: 5,
@@ -264,7 +279,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         scrollMargin: 25,
       },
       large: {
-        margin: { top: 60, right: 5, left: 5, bottom: 20 },
+        margin: { top: 60, right: 30, left: 5, bottom: 20 },
         headerMargin: { top: 10, right: 20, bottom: 20, left: 20 },
         infoElHeight: 16,
         infoElMargin: 5,
@@ -278,7 +293,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
     const presentationProfileChanges = {
       medium: {
-        margin: { top: 60, right: 10, left: 10, bottom: 40 },
+        margin: { top: 60, right: 30, left: 10, bottom: 40 },
         headerMargin: { top: 10, right: 20, bottom: 20, left: 20 },
         infoElHeight: 25,
         infoElMargin: 10,
@@ -286,7 +301,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         barMargin: 6
       },
       large: {
-        margin: { top: 60, right: 10, left: 10, bottom: 40 },
+        margin: { top: 60, right: 35, left: 10, bottom: 40 },
         headerMargin: { top: 10, right: 20, bottom: 20, left: 20 },
         infoElHeight: 16,
         infoElMargin: 10,
@@ -383,8 +398,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
     const warningBBox = this.dataWarningEl.select('text').node().getBBox();
     this.dataWarningEl
-      .attr('transform', `translate(${this.width - margin.right - warningBBox.width}, ${warningBBox.height})`)
-      .select('text');
+      .attr('transform', `translate(${this.width - margin.right - warningBBox.width}, ${warningBBox.height})`);
 
     this.dataWarningEl
       .select('svg')
@@ -392,6 +406,9 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       .attr('height', warningBBox.height)
       .attr('x', -warningBBox.height - 5)
       .attr('y', -warningBBox.height + 1);
+
+    this.missedPositionsWarningEl
+      .attr('transform', `translate(${this.width - margin.right - warningBBox.width - warningBBox.height * 3}, ${warningBBox.height})`);
 
     this._updateDoubtOpacity();
   },
@@ -491,30 +508,40 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
           .attr('x', valueX(value))
           .attr('y', this.activeProfile.barHeight / 2)
           .attr('text-anchor', valueAnchor(value));
+
+        bar.barRank          
+          .text((d, i) => value || value === 0 ? "#" + (d.rank) : "")
+          .attr('dx', ".5em")
+          .attr('y', this.activeProfile.barHeight / 2);
       }
 
       if (force || bar.changedWidth || presentationModeChanged) {
         const width = Math.max(0, value && barWidth(Math.abs(value))) || 0;
 
-        if (force || bar.changedWidth || presentationModeChanged) {
-          bar.barRect
-            .transition().duration(duration).ease(d3.easeLinear)
-            .attr('width', width)
-        }
-
-        bar.barRect
-          .attr('x', barX(value) - (value < 0 ? width : 0));
-
         if (force || bar.changedValue) {
           bar.barValue
             .text(this._formatter(value) || this.translator('hints/nodata'));
         }
+
+        if (force || bar.changedWidth || presentationModeChanged) {
+          bar.barRect
+            .transition().duration(duration).ease(d3.easeLinear)
+            .attr('width', width);
+          bar.barRank
+            .transition().duration(duration).ease(d3.easeLinear)
+            .attr('x', labelX(value) + Math.max(width, bar.barValue.node().getBBox().width + 10));
+        }
+
+        bar.barRect
+          .attr('x', barX(value) - (value < 0 ? width : 0));
       }
 
       if (force || bar.changedIndex || presentationModeChanged) {
         !duration && bar.self.interrupt();
         (duration ? bar.self.transition().duration(duration).ease(d3.easeLinear) : bar.self)
           .attr('transform', `translate(0, ${this._getBarPosition(bar.index)})`);
+        bar.barRank          
+          .text((d, i) => value || value === 0 ? "#" + (d.rank) : "");
       }
     });
   },
@@ -609,11 +636,16 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
             .attr('class', 'vzb-br-value')
             .attr('dy', '.325em');
 
+          const barRank = self.append('text')
+            .attr('class', 'vzb-br-rank')
+            .attr('dy', '.325em');
+
           Object.assign(d, {
             self,
             isNew: true,
             barRect,
             barValue,
+            barRank
           });
         }
       })
@@ -692,6 +724,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       const key = utils.getKey(entity, KEYS);
       const cached = this._entities[key];
       const value = values[utils.getKey(entity, dataKey)];
+      !value && value !== 0 && this.nullValuesCount++;
       const label = this._getLabelText(this.values, this.labelNames, entity);
       const formattedValue = this._formatter(value);
 
@@ -716,10 +749,11 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
         changedWidth: true,
         isNew: true
       };
-    }).sort(({ value: a }, { value: b }) => b - a)
-      .map((entity, index) =>
+    }).sort(({ value: a }, { value: b }) => (b || (b === 0 ? 0 : -Infinity)) - (a || (a === 0 ? 0 : -Infinity)))
+      .map((entity, index, entities) => 
         Object.assign(entity, {
-          index,
+          index: index,
+          rank: !index || entities[index - 1].formattedValue !== entity.formattedValue ? index + 1 : entities[index - 1].rank,
           changedIndex: index !== entity.index
         }));
   },
@@ -795,8 +829,66 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
 
   _getLabelText(values, labelNames, d) {
     return this.KEYS.map(key => values[labelNames[key]] ? values[labelNames[key]][d[key]] : d[key]).join(", ");    
-  }
+  },
 
+  _createTooltipInteract(contextElement, sourceElement) {
+    const _this = this;
+    return {
+      mouseOver() {
+        const evt = d3.event;
+        const mouse = d3.mouse(contextElement.node());
+        const sourceElementBBox = sourceElement.node().getBBox();
+        const coordInSource= d3.mouse(sourceElement.node());
+        _this.tooltipSvg.classed("vzb-hidden", false);
+        _this._setTooltip(d3.select(evt.target).attr("data-text"), 
+          mouse[0] - coordInSource[0], 
+          mouse[1] - coordInSource[1] + sourceElementBBox.y);
+      },
+      mouseOut() {
+        _this.tooltipSvg.classed("vzb-hidden", true);
+        _this._setTooltip();
+      },
+      tap() {
+
+      }
+    };
+  },
+
+  _setTooltip(tooltipText, x, y) {
+    if (tooltipText) {
+
+      //position tooltip
+      this.tooltip.classed("vzb-hidden", false)
+      //.attr("style", "left:" + (mouse[0] + 50) + "px;top:" + (mouse[1] + 50) + "px")
+        .selectAll("text")
+        .text(tooltipText);
+
+      const contentBBox = this.tooltip.select("text").node().getBBox();
+      if (x - contentBBox.width < 0) {
+        x = contentBBox.width + 5; // corrective to the block Radius and text padding
+      } else {
+        x -= 5; // corrective to the block Radius and text padding
+      }
+      if (y - contentBBox.height < 0) {
+        y += contentBBox.height;
+      } else {
+        y -= 11; // corrective to the block Radius and text padding
+      }
+
+      this.tooltip.attr("transform", "translate(" + x + "," + y + ")");
+
+      this.tooltip.selectAll("rect")
+        .attr("width", contentBBox.width + 8)
+        .attr("height", contentBBox.height * 1.2)
+        .attr("x", -contentBBox.width - 4)
+        .attr("y", -contentBBox.height * 0.85)
+        .attr("rx", contentBBox.height * 0.2)
+        .attr("ry", contentBBox.height * 0.2);
+
+    } else {
+      this.tooltip.classed("vzb-hidden", true);
+    }
+  }
 });
 
 export default BarRankChart;

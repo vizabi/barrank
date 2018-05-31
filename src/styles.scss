@@ -12,6 +12,8 @@
         font-size: $vzb-font-size-small;
       }
 
+      .vzb-br-tooltip,
+      .vzb-br-rank,
       .vzb-br-label {
         font-size: $vzb-font-size-small;
       }
@@ -33,6 +35,8 @@
         font-size: $vzb-font-size-medium;
       }
 
+      .vzb-br-tooltip,
+      .vzb-br-rank,
       .vzb-br-label {
         font-size: $vzb-font-size-medium;
       }
@@ -53,6 +57,8 @@
         font-size: $vzb-font-size-large;
       }
 
+      .vzb-br-tooltip,
+      .vzb-br-rank,
       .vzb-br-label {
         font-size: $vzb-font-size-large;
       }
@@ -74,6 +80,8 @@
           font-size: $vzb-font-size-large;
         }
 
+        .vzb-br-tooltip,
+        .vzb-br-rank,
         .vzb-br-label {
           font-size: $vzb-font-size-large;
         }
@@ -94,6 +102,8 @@
           font-size: $vzb-font-size-larger;
         }
 
+        .vzb-br-tooltip,
+        .vzb-br-rank,
         .vzb-br-label {
           font-size: $vzb-font-size-larger;
         }
@@ -166,9 +176,39 @@
           }
         }
       }
+
+      .vzb-br-rank {
+        font-weight: bolder;
+      }
+
     }
     .vzb-data-warning-svg {
       width: 100%;
+      .vzb-data-warning-missed-positions {
+        text-anchor: end;
+      }
+    }
+
+    .vzb-br-tooltip-svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .vzb-br-tooltip {
+      @extend %vzb-chart-tooltip;
+      @include rtl {
+        text {
+          direction: rtl;
+          text-anchor: start;
+          unicode-bidi: embed;
+        }
+      }
+      text {
+        fill: $vzb-color-accent-orange;
+      }
     }
   }
 }
