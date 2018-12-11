@@ -121,7 +121,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
         doubtDomain: [],
         doubtRange: []
       },
-      "buttons": ["colors", "find", "moreoptions", "fullscreen", "presentation"],
+      "buttons": ["colors", "find", "moreoptions", "presentation", "sidebarcollapse", "fullscreen"],
       "dialogs": {
         "popup": ["timedisplay", "colors", "find", "moreoptions"],
         "sidebar": ["timedisplay", "colors", "find"],
