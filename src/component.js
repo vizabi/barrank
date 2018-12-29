@@ -72,6 +72,10 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
       'change:marker.opacityRegular': () => {
         this._updateOpacity();
       },
+      'change:ui.chart.showForecastOverlay': () => {
+        if (!this._readyOnce) return;
+        this._updateForecastOverlay();
+      }
     };
 
     //contructor is the same as any component
@@ -115,6 +119,7 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.dataWarningEl = this.element.select('.vzb-data-warning');
     this.tooltipSvg = this.element.select(".vzb-br-tooltip-svg");
     this.tooltip = this.element.select(".vzb-br-tooltip");
+    this.forecastOverlay = this.element.select(".vzb-br-forecastoverlay");
     this.missedPositionsWarningEl = this.element.select('.vzb-data-warning-missed-positions');
     const _interact = this._createTooltipInteract(this.element, this.missedPositionsWarningEl);
     this.missedPositionsWarningEl
@@ -245,12 +250,17 @@ const BarRankChart = Vizabi.Component.extend("barrankchart", {
     this.time = this.model.time.value;
     //smooth animation is needed when playing, except for the case when time jumps from end to start
     const duration = this.model.time.playing && (this.time - this.time_1 > 0) ? this.model.time.delayAnimations : 0;
+    this._updateForecastOverlay();
 
     //return if drawAxes exists with error
     if (this.drawAxes(duration, force)) return;
     this.drawData(duration, force);
   },
 
+  _updateForecastOverlay() {
+    this.forecastOverlay.classed("vzb-hidden", (this.model.time.value <= this.model.time.endBeforeForecast) || !this.model.time.endBeforeForecast || !this.model.ui.chart.showForecastOverlay);
+  },
+  
   /*
    * draw the chart/stage
    */
