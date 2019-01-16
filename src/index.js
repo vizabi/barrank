@@ -125,7 +125,7 @@ export default Vizabi.Tool.extend("BarRankChart", {
       "dialogs": {
         "popup": ["timedisplay", "colors", "find", "moreoptions"],
         "sidebar": ["timedisplay", "colors", "find"],
-        "moreoptions": ["opacity", "speed", "colors", "presentation", "about"]
+        "moreoptions": ["opacity", "speed", "colors", "presentation", "technical", "about"]
       },
       presentation: false
     }
