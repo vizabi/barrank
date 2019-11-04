@@ -1,135 +1,72 @@
 import "./styles.scss";
-import component from "./component";
 
-const VERSION_INFO = { version: __VERSION, build: __BUILD };
+import { 
+  BaseComponent,
+  TimeSlider,
+  DataNotes,
+  LocaleService,
+  LayoutService,
+  TreeMenu,
+  SteppedSlider,
+  ButtonList 
+} from "VizabiSharedComponents";
+import VizabiBarrankchart from "./component.js";
 
-export default Vizabi.Tool.extend("BarRankChart", {
+export default class Barrankchart extends BaseComponent {
 
-  // Run when the tool is created
-  init: function (placeholder, externalModel) {
-
-    this.name = "barrankchart";
-
-    this.components = [{
-      component: component,
-      placeholder: ".vzb-tool-viz",
-      model: ["state.time", "state.marker", "locale", "ui"]
-    }, {
-      component: Vizabi.Component.get("timeslider"),
-      placeholder: ".vzb-tool-timeslider",
-      model: ["state.time", "state.marker", "ui"]
-    }, {
-      component: Vizabi.Component.get("dialogs"),
-      placeholder: ".vzb-tool-dialogs",
-      model: ["state", "ui", "locale"]
-    }, {
-      component: Vizabi.Component.get("buttonlist"),
-      placeholder: ".vzb-tool-buttonlist",
-      model: ["state", "ui", "locale"]
-    }, {
-      component: Vizabi.Component.get("treemenu"),
-      placeholder: ".vzb-tool-treemenu",
-      model: ["state.marker", "state.time", "locale", "ui"]
-    }, {
-      component: Vizabi.Component.get("datanotes"),
-      placeholder: ".vzb-tool-datanotes",
-      model: ["state.marker", "locale"]
-    }, {
-      component: Vizabi.Component.get("datawarning"),
-      placeholder: ".vzb-tool-datawarning",
-      model: ["locale"]
-    }, {
-      component: Vizabi.Component.get("steppedspeedslider"),
-      placeholder: ".vzb-tool-stepped-speed-slider",
-      model: ["state.time", "locale"]
+  constructor(config){
+    config.subcomponents = [{
+      type: VizabiBarrankchart,
+      placeholder: ".vzb-barrankchart",
+      //model: this.model
+      name: "chart"
+    },{
+      type: TimeSlider,
+      placeholder: ".vzb-timeslider",
+      name: "time-slider"
+      //model: this.model
+    },{
+      type: SteppedSlider,
+      placeholder: ".vzb-speedslider",
+      name: "speed-slider"
+      //model: this.model
+    },{
+      type: TreeMenu,
+      placeholder: ".vzb-treemenu",
+      name: "tree-menu"
+      //model: this.model
+    },{
+      type: DataNotes,
+      placeholder: ".vzb-datanotes",
+      //model: this.model
+    },{
+      type: ButtonList,
+      placeholder: ".vzb-buttonlist",
+      name: "buttons"
+      //model: this.model
     }];
 
-    // constructor is the same as any tool
-    this._super(placeholder, externalModel);
-  },
+    config.template = `
+      <div class="vzb-barrankchart"></div>
+      <div class="vzb-animationcontrols">
+        <div class="vzb-timeslider"></div>
+        <div class="vzb-speedslider"></div>
+      </div>
+      <div class="vzb-sidebar">
+        <div class="vzb-buttonlist"></div>
+      </div>
+      <div class="vzb-treemenu"></div>
+      <div class="vzb-datanotes"></div>
+    `;
 
-  /**
-   * Determines the default model of this tool
-   */
-  default_model: {
-    "state": {
-      "time": {
-        "autoconfig": {
-          "type": "time"
-        }
-      },
-      "entities": {
-        "autoconfig": {
-          "type": "entity_domain",
-          "excludeIDs": ["tag"]
-        }
-      },
-      "entities_colorlegend": {
-        "autoconfig": {
-          "type": "entity_domain",
-          "excludeIDs": ["tag"]
-        }
-      },
-      "marker": {
-        "space": ["entities", "time"],
-        "axis_x": {
-          "use": "indicator",
-          "autoconfig": {
-            "type": "measure"
-          },
-          "allow": { scales: ["linear", "log"] }
-        },
-        // "axis_y": {
-        //   "use": "property",
-        //   "allow": { scales: ["ordinal", "nominal"] },
-        //   "autoconfig": {
-        //     "type": "entity_domain"
-        //   }
-        // },
-        "label": {
-          "use": "property",
-          "autoconfig": {
-            "includeOnlyIDs": ["name"],
-            "type": "string"
-          }
-        },
-        "color": {
-          "syncModels": ["marker_colorlegend"],
-          "autoconfig": {}
-        }
-      },
-      "marker_colorlegend": {
-        "space": ["entities_colorlegend"],
-        "label": {
-          "use": "property",
-          "which": "name"
-        },
-        "hook_rank": {
-          "use": "property",
-          "which": "rank"
-        },
-        "hook_geoshape": {
-          "use": "property",
-          "which": "shape_lores_svg"
-        }
-      }
-    },
-    locale: {},
-    ui: {
-      chart: {},
-      datawarning: {
-        doubtDomain: [],
-        doubtRange: []
-      },
-      "buttons": ["colors", "find", "moreoptions", "presentation", "sidebarcollapse", "fullscreen"],
-      "dialogs": {
-        "popup": ["timedisplay", "colors", "find", "moreoptions"],
-        "sidebar": ["timedisplay", "colors", "find"],
-        "moreoptions": ["opacity", "speed", "colors", "presentation", "technical", "about"]
-      },
-      presentation: false
-    }
-  },
+    config.services = {
+      locale: new LocaleService(),
+      layout: new LayoutService(config)
+    };
 
-  versionInfo: VERSION_INFO
-});
+    //register locale service in the marker model
+    config.model.config.data.locale = config.services.locale;
+
+    super(config);
+  }
+}
