@@ -9,10 +9,7 @@ const commonjs = require("rollup-plugin-commonjs");
 const replace = require("rollup-plugin-replace");
 const {terser} = require("rollup-plugin-terser");
 const sass = require("rollup-plugin-sass");
-const serve = require("rollup-plugin-serve");
-const livereload = require("rollup-plugin-livereload");
 const json = require("rollup-plugin-json");
-const visualizer = require("rollup-plugin-visualizer");
 const trash = require("rollup-plugin-delete");
 const copy = require("rollup-plugin-copy");
 
@@ -27,7 +24,12 @@ module.exports = ((chartName, chartNameLower, dirName, dir) => ({
     dir: (dir || "build"),
     format: "umd",
     banner: copyright,
-    sourcemap: true
+    sourcemap: true,
+    globals: {
+      "mobx": "mobx",
+      "Vizabi": "Vizabi",
+      "VizabiSharedComponents": "VizabiSharedComponents"
+    }
   },
   external: ["mobx", "Vizabi", "VizabiSharedComponents"],
   plugins: [
@@ -55,10 +57,5 @@ module.exports = ((chartName, chartNameLower, dirName, dir) => ({
       ENV: JSON.stringify(process.env.NODE_ENV || "development")
     }),
     (process.env.NODE_ENV === "production" && terser({output: {preamble: copyright}})),
-    (process.env.NODE_ENV === "devserver" && serve("build")),
-    (process.env.NODE_ENV === "devserver" && livereload("build")),
-    visualizer({
-      filename: "./build/stats.html"
-    }),
   ]
 })).bind(null, 'BarrankChart', 'barrankchart', __dirname);
