@@ -3,9 +3,9 @@
   "version": "2.4.2",
   "description": "Bar rank chart tool for Vizabi 📊",
   "scripts": {
-    "link": "npm link ../vizabi",
-    "start": "webpack-dev-server",
-    "build": "cross-env NODE_ENV=production webpack --progress",
+    "link": "npm link ../vizabi-shared-components",
+    "start": "rollup -c",
+    "build": "cross-env NODE_ENV=production rollup -c",
     "deploy": "tool-deploy"
   },
   "main": "build/barrankchart.js",
@@ -26,21 +26,6 @@
   "devDependencies": {
     "cross-env": "^5.0.0",
     "css.escape": "^1.5.1",
-    "vizabi": "latest",
-    "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler",
-    "rollup": "^1.25.2",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-copy": "^3.1.0",
-    "rollup-plugin-delete": "^1.1.0",
-    "rollup-plugin-eslint": "^7.0.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-multi-entry": "^2.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-sass": "^1.2.2",
-    "rollup-plugin-terser": "^5.1.2",
-    "rollup-watch": "^4.3.1",
-    "bourbon": "^5.1.0"
+    "vizabi-tool-bundler": "github:vizabi/vizabi-tool-bundler#daedead"
   }
 }
