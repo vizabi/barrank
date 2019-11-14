@@ -67,7 +67,7 @@ const PROFILE_CONSTANTS_FOR_PROJECTOR = {
   }
 };
 
-export default class VizabiBarrankchart extends BaseComponent {
+export default class VizabiBarRankChart extends BaseComponent {
 
   constructor(config) {
     config.template = `

@@ -10,13 +10,13 @@ import {
   SteppedSlider,
   ButtonList 
 } from "VizabiSharedComponents";
-import VizabiBarrankchart from "./component.js";
+import VizabiBarRankChart from "./component.js";
 
-export default class Barrankchart extends BaseComponent {
+export default class BarRankChart extends BaseComponent {
 
   constructor(config){
     config.subcomponents = [{
-      type: VizabiBarrankchart,
+      type: VizabiBarRankChart,
       placeholder: ".vzb-barrankchart",
       //model: this.model
       name: "chart"
