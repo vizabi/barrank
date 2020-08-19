@@ -60,8 +60,8 @@ export default class BarRankChart extends BaseComponent {
     `;
 
     config.services = {
-      locale: new LocaleService(),
-      layout: new LayoutService(config)
+      locale: new LocaleService(config.locale),
+      layout: new LayoutService({placeholder: config.placeholder})
     };
 
     //register locale service in the marker model
