@@ -68,7 +68,6 @@ export default class BarRankChart extends BaseComponent {
         <div class="vzb-buttonlist"></div>
       </div>
       <div class="vzb-treemenu"></div>
-      <div class="vzb-datawarning"></div>
       <div class="vzb-datanotes"></div>
     `;
 
@@ -85,3 +84,11 @@ export default class BarRankChart extends BaseComponent {
     super(config);
   }
 }
+
+
+BarRankChart.DEFAULT_UI = {
+  chart: {
+    opacitySelectDim: 0.3,
+    opacityRegular: 0.5,
+  }
+};

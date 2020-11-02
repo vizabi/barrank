@@ -397,7 +397,7 @@ export default class VizabiBarRankChart extends BaseComponent {
     else if (typeof d.label === "string") 
       label = d.label;
     else 
-      label = Object.keys(d.label).join(", ");
+      label = Object.values(d.label).join(", ");
 
     if (label.length >= longestLabelLength) label = label.substring(0, longestLabelLength - 1) + "…";
     return label;
