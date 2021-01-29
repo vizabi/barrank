@@ -180,7 +180,7 @@ export default class VizabiBarRankChart extends BaseComponent {
     this.addReaction(this._drawHeader);
     this.addReaction(this._drawInfoEl);
     this.addReaction(this._drawFooter);
-    this.addReaction(this._getWidestLabelWidth);
+    this.addReaction(this._estimateLabelAndValueWidth);
 
     //this.addReaction(this._processFrameData);
     //this.addReaction(this._createAndDeleteBars);
@@ -463,11 +463,13 @@ export default class VizabiBarRankChart extends BaseComponent {
     this._processFrameData();
     this._createAndDeleteBars();
     
-    const { barLabelMargin, barValueMargin, barRankMargin, scrollMargin, margin } = this.profileConstants;
+    const { barLabelMargin, barValueMargin, barRankMargin, scrollMargin, margin, longestLabelLength } = this.profileConstants;
     let limits = this.MDL.x.scale.domain;
     limits = {min: d3.min(limits), max: d3.max(limits)};
     const ltr = Math.abs(limits.max) >= Math.abs(limits.min);
     const hasNegativeValues = ltr ? limits.min < 0 : limits.max > 0;
+
+    const longestLabelW = this.__labelCharWidth * longestLabelLength;
 
     const rightEdge = (
       this.width
@@ -475,7 +477,7 @@ export default class VizabiBarRankChart extends BaseComponent {
       - margin.left
       - barLabelMargin
       - scrollMargin
-      - (hasNegativeValues ? 0 : this.__widestLabelWidth)
+      - (hasNegativeValues ? 0 : longestLabelW)
     ) / (hasNegativeValues ? 2 : 1);
 
     this.xScale.range([0, rightEdge]);
@@ -484,7 +486,7 @@ export default class VizabiBarRankChart extends BaseComponent {
       this.xScale.domain([0, Math.max(...this.xScale.domain())]);
     }
 
-    const shift = hasNegativeValues ? rightEdge : this.__widestLabelWidth;
+    const shift = hasNegativeValues ? rightEdge : longestLabelW;
 
     const isLtrValue = value => ltr ? value >= 0 : value > 0;
 
@@ -529,7 +531,7 @@ export default class VizabiBarRankChart extends BaseComponent {
       if (bar.changedFormattedValue) {
         bar.DOM.value
           .text(bar.formattedValue);
-        bar.valueWidth = barValueMargin + bar.DOM.value.node().getBBox().width;
+        bar.valueWidth = barValueMargin + bar.formattedValue.length * this.__valueCharWidth;
       }
 
       if (bar.changedIndex || bar.changedValue || sizeChanged)
@@ -604,21 +606,22 @@ export default class VizabiBarRankChart extends BaseComponent {
       });
   }
 
-  _getWidestLabelWidth() {
+  _estimateLabelAndValueWidth() {
     //updates on resize
-    this.services.layout.width + this.services.layout.height;
-
-    const longestLabel = "N".repeat(this.profileConstants.longestLabelLength);
+    this.services.layout.size;
 
     const probe = this.DOM.barContainer
       .append("g").attr("class", "vzb-br-bar vzb-br-probe vzb-hidden");
 
-    const width = probe.append("text")
+    this.__labelCharWidth = probe.append("text")
       .attr("class", "vzb-br-label")
-      .text(longestLabel).node().getBBox().width;
+      .text("0").node().getBBox().width;
+
+    this.__valueCharWidth = probe.append("text")
+      .attr("class", "vzb-br-value")
+      .text("~").node().getBBox().width;
 
     probe.remove();
-    return this.__widestLabelWidth = width;
   }
 
   _getBarPosition(i) {
