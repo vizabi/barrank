@@ -624,7 +624,7 @@ class _VizabiBarRankChart extends BaseComponent {
   }
 
   _resizeSvg() {
-    const { margin, barHeight, barMargin } = this.profileConstants;
+    const { barHeight, barMargin } = this.profileConstants;
 
     // this.DOM.barViewport
     //   .style("height", `${this.height - margin.bottom - margin.top}px`);

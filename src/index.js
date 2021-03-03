@@ -78,8 +78,8 @@ export default class BarRankChart extends BaseComponent {
 
     //register locale service in the marker model
     config.model.config.markers.bar.data.locale = observable({
-        get id() { return config.services.locale.id; }
-      });
+      get id() { return config.services.locale.id; }
+    });
 
     super(config);
   }
