@@ -1,3 +1,5 @@
+import {decorate, computed} from "mobx";
+
 import { BaseComponent } from "VizabiSharedComponents";
 import { LegacyUtils as utils} from "VizabiSharedComponents";
 import { Icons } from "VizabiSharedComponents";
@@ -67,7 +69,7 @@ const PROFILE_CONSTANTS_FOR_PROJECTOR = {
   }
 };
 
-export default class VizabiBarRankChart extends BaseComponent {
+class _VizabiBarRankChart extends BaseComponent {
 
   constructor(config) {
     config.template = `
@@ -154,10 +156,9 @@ export default class VizabiBarRankChart extends BaseComponent {
 
     this._cache = {};
   }
-  
-  draw() {
-    //JASPER: i can't move this to "setup", ideally would avoid running getters on each time ticklk
-    this.MDL = {
+
+  get MDL(){
+    return {
       frame: this.model.encoding.get("frame"),
       selected: this.model.encoding.get("selected").data.filter,
       highlighted: this.model.encoding.get("highlighted").data.filter,
@@ -165,13 +166,15 @@ export default class VizabiBarRankChart extends BaseComponent {
       color: this.model.encoding.get("color"),
       label: this.model.encoding.get("label")
     };
+  }
+
+
+  draw() {
     this.localise = this.services.locale.auto();
 
     // new scales and axes
     this.xScale = this.MDL.x.scale.d3Scale.copy();
     this.cScale = this.MDL.color.scale.d3Scale;
-
-
     
     this.addReaction(this._drawForecastOverlay);
     
@@ -720,3 +723,7 @@ export default class VizabiBarRankChart extends BaseComponent {
       });
   }
 }
+//export default chart;
+export const VizabiBarRankChart = decorate(_VizabiBarRankChart, {
+  "MDL": computed
+});

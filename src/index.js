@@ -11,7 +11,7 @@ import {
   Dialogs,
   ButtonList 
 } from "VizabiSharedComponents";
-import VizabiBarRankChart from "./component.js";
+import {VizabiBarRankChart} from "./component.js";
 import { observable } from "mobx";
 
 export default class BarRankChart extends BaseComponent {
