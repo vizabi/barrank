@@ -157,6 +157,8 @@ class _VizabiBarRankChart extends BaseComponent {
     };
   }
 
+  
+
 
   draw() {
     this.localise = this.services.locale.auto();
@@ -396,10 +398,10 @@ class _VizabiBarRankChart extends BaseComponent {
     return label;
   }
 
-  _processFrameData() {
+  get __dataProcessed() {
     this.nullValuesCount = 0;
 
-    return this.__dataProcessed = this.model.dataArray
+    return this.model.dataArray
       //copy array in order to not sort in place
       .concat()
       //sort array by x value
@@ -454,7 +456,6 @@ class _VizabiBarRankChart extends BaseComponent {
     const sizeChanged = this.sizes !== this.sizes_1;
     this.sizes_1 = sizes;
     
-    this._processFrameData();
     this._createAndDeleteBars();
     
     const { barLabelMargin, barValueMargin, barRankMargin, scrollMargin, margin, longestLabelLength } = this.profileConstants;
@@ -731,5 +732,6 @@ _VizabiBarRankChart.DEFAULT_UI = {
 
 //export default chart;
 export const VizabiBarRankChart = decorate(_VizabiBarRankChart, {
-  "MDL": computed
+  "MDL": computed,
+  "__dataProcessed": computed
 });
