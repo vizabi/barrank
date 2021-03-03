@@ -381,6 +381,12 @@ class _VizabiBarRankChart extends BaseComponent {
   get __dataProcessed() {
     this.nullValuesCount = 0;
 
+    //purge cache from the items that are no longer in data, to have them set as "new" when re-added
+    Object.keys(this._cache).forEach(cacheItem => {
+      if (!this.model.dataMap.hasByObjOrStr(null, cacheItem))
+        delete this._cache[cacheItem];      
+    });
+
     return this.model.dataArray
       //copy array in order to not sort in place
       .concat()
@@ -398,6 +404,7 @@ class _VizabiBarRankChart extends BaseComponent {
         const formattedLabel = this._getLabelText(d);
         const rank = !index || result[index - 1].formattedValue !== formattedValue ? index + 1 : result[index - 1].rank;
   
+        //cache allows to know which aspects we need to update in particular per DOM marker
         if (cached) {
           result.push(Object.assign(cached, {
             value,
@@ -486,55 +493,55 @@ class _VizabiBarRankChart extends BaseComponent {
       const { barHeight } = this.profileConstants;
       const width = Math.max(0, value && this.xScale(Math.abs(value))) || 0;
 
-      if (bar.changedValue || sizeChanged)
+      if (bar.isNew || sizeChanged || bar.changedValue)
         bar.DOM.label
           .attr("x", labelX(value))
           .attr("y", barHeight / 2)
           .attr("text-anchor", labelAnchor(value));
 
-      if (bar.changedFormattedLabel) 
+      if (bar.isNew || bar.changedFormattedLabel) 
         bar.DOM.label
           .text(bar.formattedLabel);
 
-      if (sizeChanged)
+      if (bar.isNew || sizeChanged)
         bar.DOM.rect
           .attr("rx", barHeight / 4)
           .attr("ry", barHeight / 4)
           .attr("height", barHeight);
 
-      if (bar.changedValue || sizeChanged)
+      if (bar.isNew || sizeChanged || bar.changedValue)
         bar.DOM.value
           .attr("x", valueX(value))
           .attr("y", barHeight / 2)
           .attr("text-anchor", valueAnchor(value));
 
-      if (bar.changedFormattedValue || sizeChanged) {
+      if (bar.isNew || sizeChanged || bar.changedFormattedValue) {
         bar.DOM.value
           .text(bar.formattedValue);
         bar.valueWidth = barValueMargin + bar.formattedValue.length * this.__valueCharWidth;
       }
 
-      if (bar.changedIndex || bar.changedValue || sizeChanged)
+      if (bar.isNew || sizeChanged || bar.changedIndex || bar.changedValue)
         bar.DOM.rank
           .text(value || value === 0 ? "#" + bar.rank : "")
           .attr("y", barHeight / 2)
           .attr("text-anchor", valueAnchor(value));
 
-      if (bar.changedIndex || sizeChanged)
+      if (bar.isNew || sizeChanged || bar.changedIndex)
         transition(bar.DOM.group)
           .attr("transform", `translate(0, ${this._getBarPosition(bar.index)})`);
       
-      if (bar.changedValue || sizeChanged)
+      if (bar.isNew || sizeChanged || bar.changedValue)
         transition(bar.DOM.rect)
           .attr("width", width)
           .attr("x", value < 0 ? -width : 0);
 
-      if (bar.changedValue || sizeChanged){
+      if (bar.isNew || sizeChanged || bar.changedValue){
         transition(bar.DOM.rank)
           .attr("x", (Math.max(width, bar.valueWidth || 0) + barRankMargin) * (isLtrValue(value) ? 1 : -1));
       }
 
-      if (bar.changedColor)
+      if (bar.isNew || bar.changedColor)
         this._updateColor(bar);      
     });
   }
