@@ -88,7 +88,5 @@ export default class BarRankChart extends BaseComponent {
 
 BarRankChart.DEFAULT_UI = {
   chart: {
-    opacitySelectDim: 0.3,
-    opacityRegular: 0.5,
   }
 };

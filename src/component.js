@@ -120,17 +120,6 @@ class _VizabiBarRankChart extends BaseComponent {
 
 
   setup() {
-    this.state = {
-      showForecastOverlay: false,
-      opacityHighlightDim: 0.1,
-      opacitySelectDim: 0.3,
-      opacityRegular: 1,
-      datawarning: {
-        doubtDomain: [],
-        doubtRange: []
-      }
-    };
-
     this.DOM = {
       header: this.element.select(".vzb-br-header"),
       title: this.element.select(".vzb-br-title"),
@@ -151,8 +140,8 @@ class _VizabiBarRankChart extends BaseComponent {
     };
 
     this.wScale = d3.scaleLinear()
-      .domain(this.state.datawarning.doubtDomain)
-      .range(this.state.datawarning.doubtRange);
+      .domain(this.ui.datawarning.doubtDomain)
+      .range(this.ui.datawarning.doubtRange);
 
     this._cache = {};
   }
@@ -210,7 +199,7 @@ class _VizabiBarRankChart extends BaseComponent {
   _drawForecastOverlay() {
     this.DOM.forecastOverlay.classed("vzb-hidden", 
       !this.MDL.frame.endBeforeForecast || 
-      !this.state.showForecastOverlay || 
+      !this.ui.showForecastOverlay || 
       (this.MDL.frame.value <= this.MDL.frame.endBeforeForecast)
     );
   }
@@ -706,7 +695,7 @@ class _VizabiBarRankChart extends BaseComponent {
       opacityHighlightDim,
       opacitySelectDim,
       opacityRegular,
-    } = this.state;
+    } = this.ui;
 
     const someHighlighted = this.MDL.highlighted.markers.size > 0;
     const someSelected = this.MDL.selected.markers.size > 0;
@@ -723,6 +712,23 @@ class _VizabiBarRankChart extends BaseComponent {
       });
   }
 }
+
+_VizabiBarRankChart.DEFAULT_UI = {
+  lilFrameDisplayAlwaysHidden: false,
+  showForecast: false,
+  showForecastOverlay: true,
+  pauseBeforeForecast: true,
+  opacityHighlight: 1.0,
+  opacitySelect: 1.0,
+  opacityHighlightDim: 0.3,
+  opacitySelectDim: 0.5,
+  opacityRegular: 1.0,
+  datawarning: {
+    doubtDomain: [],
+    doubtRange: []
+  }
+};
+
 //export default chart;
 export const VizabiBarRankChart = decorate(_VizabiBarRankChart, {
   "MDL": computed
