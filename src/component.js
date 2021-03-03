@@ -185,8 +185,6 @@ class _VizabiBarRankChart extends BaseComponent {
 
     this.addReaction(this._updateFrameDisplay);
     this.addReaction(this._updateDataWarning);
-    this.addReaction(this._updateMissedPositionWarning);
-    
   }
 
   _getDuration() {
@@ -358,29 +356,14 @@ class _VizabiBarRankChart extends BaseComponent {
       .on("click", () => this.root.findChildByName("gapminder-datawarning").toggle())
       .on("mouseover", () => this._updateDataWarning(1))
       .on("mouseout", () => this._updateDataWarning());
-
-    this.DOM.missedPositionsWarning
-      .attr("transform", `translate(${this.width - margin.right - warningBBox.width - warningBBox.height * 3}, ${warningBBox.height})`);
-
-    this.DOM.missedPositionsWarning
-      .select("text")
-      .attr("data-text", this.localise("hints/barrank/missedPositionsTooltip"))
-      .text(this.localise("hints/barrank/missedPositionsWarning"));
-  }
-
-  _updateMissedPositionWarning() {
-    this.DOM.missedPositionsWarning
-      .classed("vzb-hidden", 0 && (1 - this.nullValuesCount / this.__dataProcessed.length) > 0.85);
   }
 
   _updateDataWarning(opacity) {
-    this.DOM.dataWarning.style("opacity",
-      1 || opacity || (
-        !this.MDL.selected.markers.size ?
-          this.wScale(this.MDL.frame.value.getUTCFullYear()) :
-          1
-      )
-    );
+    this.DOM.dataWarning.style("opacity", opacity || (
+      !this.MDL.selected.markers.size ?
+        this.wScale(this.MDL.frame.value.getUTCFullYear()) :
+        1
+    ));
   }
 
   _getLabelText(d) {
