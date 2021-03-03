@@ -4,6 +4,7 @@ import {
   BaseComponent,
   TimeSlider,
   DataNotes,
+  DataWarning,
   LocaleService,
   LayoutService,
   TreeMenu,
@@ -42,6 +43,11 @@ export default class BarRankChart extends BaseComponent {
       name: "tree-menu",
       model: marker
     },{
+      name: "datawarning",
+      type: DataWarning,
+      placeholder: ".vzb-datawarning",
+      model: marker
+    },{
       type: DataNotes,
       placeholder: ".vzb-datanotes",
       model: marker
@@ -69,6 +75,7 @@ export default class BarRankChart extends BaseComponent {
       </div>
       <div class="vzb-treemenu"></div>
       <div class="vzb-datanotes"></div>
+      <div class="vzb-datawarning"></div>
     `;
 
     config.services = {

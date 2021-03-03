@@ -184,7 +184,7 @@ class _VizabiBarRankChart extends BaseComponent {
     this.addReaction(this._scroll);
 
     this.addReaction(this._updateFrameDisplay);
-    this.addReaction(this._updateDataWarning);
+    this.addReaction(this.updateDoubtOpacity);
   }
 
   _getDuration() {
@@ -353,17 +353,15 @@ class _VizabiBarRankChart extends BaseComponent {
       .text(this.localise("hints/dataWarning"));
 
     this.DOM.dataWarning
-      .on("click", () => this.root.findChildByName("gapminder-datawarning").toggle())
-      .on("mouseover", () => this._updateDataWarning(1))
-      .on("mouseout", () => this._updateDataWarning());
+      .on("click", () => this.parent.findChild({name: "datawarning"}).toggle())
+      .on("mouseover", () => this.updateDoubtOpacity(1))
+      .on("mouseout", () => this.updateDoubtOpacity());
   }
 
-  _updateDataWarning(opacity) {
-    this.DOM.dataWarning.style("opacity", opacity || (
-      !this.MDL.selected.markers.size ?
-        this.wScale(this.MDL.frame.value.getUTCFullYear()) :
-        1
-    ));
+  updateDoubtOpacity(opacity) {
+    if (opacity == null) opacity = this.wScale(this.MDL.frame.value.getUTCFullYear());
+    if (this.MDL.selected.any()) opacity = 1;
+    this.DOM.dataWarning.style("opacity", opacity);
   }
 
   _getLabelText(d) {
@@ -710,9 +708,9 @@ _VizabiBarRankChart.DEFAULT_UI = {
   opacitySelectDim: 0.5,
   opacityRegular: 1.0,
   datawarning: {
-    doubtDomain: [],
-    doubtRange: []
-  }
+    doubtDomain: [1800, 1950, 2020],
+    doubtRange: [1.0, 0.8, 0.5]
+  },
 };
 
 //export default chart;
