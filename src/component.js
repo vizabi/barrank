@@ -132,7 +132,7 @@ export default class VizabiBarRankChart extends BaseComponent {
     this.DOM = {
       header: this.element.select(".vzb-br-header"),
       title: this.element.select(".vzb-br-title"),
-      total: this.element.select(".vzb-br-total"),
+      lilFrameDisplay: this.element.select(".vzb-br-total"),
       info: this.element.select(".vzb-br-axis-info"),
   
       barViewport: this.element.select(".vzb-br-barsviewport"),
@@ -190,6 +190,7 @@ export default class VizabiBarRankChart extends BaseComponent {
     this.addReaction(this._scroll);
     this.addReaction(this._drawColors);
 
+    this.addReaction(this._updateFrameDisplay);
     this.addReaction(this._updateDataWarning);
     this.addReaction(this._updateMissedPositionWarning);
     
@@ -220,6 +221,20 @@ export default class VizabiBarRankChart extends BaseComponent {
     if (!this.height || !this.width) return utils.warn("Chart _updateProfile() abort: container is too little or has display:none");
   }
 
+  _updateFrameDisplay() {
+    const duration = this._getDuration();
+    if (duration) {
+      this.DOM.lilFrameDisplay.select("text")
+        .transition("text")
+        .delay(duration)
+        .text(this.localise(this.MDL.frame.value));
+    } else {
+      this.DOM.lilFrameDisplay.select("text")
+        .interrupt()
+        .text(this.localise(this.MDL.frame.value));
+    }
+  }
+
   _drawHeader() {
     const {
       margin,
@@ -228,7 +243,7 @@ export default class VizabiBarRankChart extends BaseComponent {
       infoElMargin,
     } = this.profileConstants;
 
-    this.services.layout.width + this.services.layout.height;
+    this.services.layout.width + this.services.layout.height + this.services.layout.projector;
 
     // header
     this.DOM.header.attr("height", margin.top);
@@ -270,31 +285,17 @@ export default class VizabiBarRankChart extends BaseComponent {
     const infoTx = titleTx + headerTitle.node().getBBox().width + infoElMargin;
     const infoTy = headerMargin.top + infoElHeight / 4;
     headerInfo.attr("transform", `translate(${infoTx}, ${infoTy})`);
-
-
-    const headerTotal = this.DOM.total;
-
-    if (this.__duration) {
-      headerTotal.select("text")
-        .transition("text")
-        .delay(this.__duration)
-        .text(this.localise(this.MDL.frame.value));
-    } else {
-      headerTotal.select("text")
-        .interrupt()
-        .text(this.localise(this.MDL.frame.value));
-    }
-    headerTotal.classed("vzb-hidden", this.services.layout.profile !== "LARGE");
-
-    const headerTotalBBox = headerTotal.node().getBBox();
-
-    const totalTx = this.width - headerMargin.right - headerTotalBBox.width;
-    const totalTy = headerMargin.top + headerTotalBBox.height;
-    headerTotal
-      .attr("transform", `translate(${totalTx}, ${totalTy})`)
-      .classed("vzb-transparent", headerTitleBBox.width + headerTotalBBox.width + 10 > this.width);
-
-
+   
+    const lilFrameBBox = this.DOM.lilFrameDisplay.node().getBBox();
+    const lilFrameTx = this.width - headerMargin.right - lilFrameBBox.width;
+    const lilFrameTy = headerMargin.top + lilFrameBBox.height;
+    this.DOM.lilFrameDisplay
+      .attr("transform", `translate(${lilFrameTx}, ${lilFrameTy})`)
+      .classed("vzb-hidden", 
+        this.ui.lilFrameDisplayAlwaysHidden ||
+        this.services.layout.profile !== "LARGE" ||
+        headerTitleBBox.width + lilFrameBBox.width + 10 > this.width
+      );
 
     this.DOM.title
       .on("click", () =>
