@@ -456,9 +456,10 @@ export default class VizabiBarRankChart extends BaseComponent {
 
   _drawData() {
 
-    this.sizes = this.services.layout.width + this.services.layout.height;
+    //TODO this is ugly
+    const sizes = this.services.layout.width + this.services.layout.height + this.services.layout.projector;
     const sizeChanged = this.sizes !== this.sizes_1;
-    this.sizes_1 = this.services.layout.width + this.services.layout.height;  
+    this.sizes_1 = sizes;
     
     this._processFrameData();
     this._createAndDeleteBars();
@@ -528,7 +529,7 @@ export default class VizabiBarRankChart extends BaseComponent {
           .attr("y", barHeight / 2)
           .attr("text-anchor", valueAnchor(value));
 
-      if (bar.changedFormattedValue) {
+      if (bar.changedFormattedValue || sizeChanged) {
         bar.DOM.value
           .text(bar.formattedValue);
         bar.valueWidth = barValueMargin + bar.formattedValue.length * this.__valueCharWidth;
@@ -609,6 +610,7 @@ export default class VizabiBarRankChart extends BaseComponent {
   _estimateLabelAndValueWidth() {
     //updates on resize
     this.services.layout.size;
+    this.services.layout.projector;
 
     const probe = this.DOM.barContainer
       .append("g").attr("class", "vzb-br-bar vzb-br-probe vzb-hidden");
