@@ -182,7 +182,6 @@ class _VizabiBarRankChart extends BaseComponent {
     this.addReaction(this._updateOpacity);
     this.addReaction(this._resizeSvg);
     this.addReaction(this._scroll);
-    this.addReaction(this._drawColors);
 
     this.addReaction(this._updateFrameDisplay);
     this.addReaction(this._updateDataWarning);
@@ -411,6 +410,7 @@ class _VizabiBarRankChart extends BaseComponent {
         const id = d[Symbol.for("key")];
         const cached = this._cache[id];
         const value = d.x;
+        const color = d.color;
         const valueValid = value || value === 0;
         if (!valueValid) this.nullValuesCount++;
         const formattedValue = valueValid? this.localise(value) : this.localise("hints/nodata");
@@ -424,10 +424,12 @@ class _VizabiBarRankChart extends BaseComponent {
             formattedLabel,
             index,
             rank,
+            color,
             changedFormattedValue: formattedValue !== cached.formattedValue,
             changedFormattedLabel: formattedLabel !== cached.formattedLabel,
             changedValue: value !== cached.value,
             changedIndex: index !== cached.index,
+            changedColor: color !== cached.color,
             isNew: false
           }));
         } else {
@@ -437,10 +439,12 @@ class _VizabiBarRankChart extends BaseComponent {
             formattedLabel,
             index,
             rank,
+            color,
             changedFormattedValue: true,
             changedFormattedLabel: true,
             changedValue: true,
             changedIndex: true,
+            changedColor: true,
             isNew: true
           }));
         }
@@ -453,7 +457,7 @@ class _VizabiBarRankChart extends BaseComponent {
 
     //TODO this is ugly
     const sizes = this.services.layout.width + this.services.layout.height + this.services.layout.projector;
-    const sizeChanged = this.sizes !== this.sizes_1;
+    const sizeChanged = sizes !== this.sizes_1;
     this.sizes_1 = sizes;
     
     this._createAndDeleteBars();
@@ -548,6 +552,9 @@ class _VizabiBarRankChart extends BaseComponent {
         transition(bar.DOM.rank)
           .attr("x", (Math.max(width, bar.valueWidth || 0) + barRankMargin) * (isLtrValue(value) ? 1 : -1));
       }
+
+      if (bar.changedColor)
+        this._updateColor(bar);      
     });
   }
 
@@ -659,26 +666,21 @@ class _VizabiBarRankChart extends BaseComponent {
     };
   }
 
-  _drawColors() {
-    const _this = this;
+  _updateColor(bar) {
+    const colorValue = bar.color;
+    const isColorValid = colorValue || colorValue === 0;
 
-    this.__dataProcessed.forEach( bar =>{
+    const fillColor = isColorValid ? this._getColor(colorValue) : COLOR_WHITEISH;
+    const strokeColor = isColorValid ? "transparent" : COLOR_BLACKISH;
+    const darkerColor = isColorValid ? this._getDarkerColor(bar.color) : COLOR_BLACKISH;
 
-      const colorValue = bar.color;
-      const isColorValid = colorValue || colorValue === 0;
+    bar.DOM.rect
+      .style("fill", fillColor)
+      .style("stroke", strokeColor);
 
-      const fillColor = isColorValid ? _this._getColor(colorValue) : COLOR_WHITEISH;
-      const strokeColor = isColorValid ? "transparent" : COLOR_BLACKISH;
-      const darkerColor = isColorValid ? this._getDarkerColor(bar.color) : COLOR_BLACKISH;
-
-      bar.DOM.rect
-        .style("fill", fillColor)
-        .style("stroke", strokeColor);
-
-      bar.DOM.value.style("fill", darkerColor);
-      bar.DOM.label.style("fill", darkerColor);
-      bar.DOM.rank.style("fill", darkerColor);
-    });
+    bar.DOM.value.style("fill", darkerColor);
+    bar.DOM.label.style("fill", darkerColor);
+    bar.DOM.rank.style("fill", darkerColor);
   }
 
   _getColor(value) {
