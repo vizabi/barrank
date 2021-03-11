@@ -1,8 +1,9 @@
 import {decorate, computed} from "mobx";
 
 import { BaseComponent } from "VizabiSharedComponents";
-import { LegacyUtils as utils} from "VizabiSharedComponents";
+import { LegacyUtils as legacyUtils} from "VizabiSharedComponents";
 import { Icons } from "VizabiSharedComponents";
+import { Utils as utils } from "VizabiSharedComponents";
 
 const {ICON_WARN, ICON_QUESTION} = Icons;
 const COLOR_BLACKISH = "rgb(51, 51, 51)";
@@ -209,7 +210,7 @@ class _VizabiBarRankChart extends BaseComponent {
     this.profileConstants = this.services.layout.getProfileConstants(PROFILE_CONSTANTS, PROFILE_CONSTANTS_FOR_PROJECTOR);
     this.height = this.element.node().clientHeight || 0;
     this.width = this.element.node().clientWidth || 0;
-    if (!this.height || !this.width) return utils.warn("Chart _updateProfile() abort: container is too little or has display:none");
+    if (!this.height || !this.width) return legacyUtils.warn("Chart _updateProfile() abort: container is too little or has display:none");
   }
 
   _updateFrameDisplay() {
@@ -288,9 +289,12 @@ class _VizabiBarRankChart extends BaseComponent {
         headerTitleBBox.width + lilFrameBBox.width + 10 > this.width
       );
 
-    this.DOM.title
+    this.treemenu = this.root.findChild({type: "TreeMenu"});
+
+    headerTitle
+      .classed("vzb-disabled", this.treemenu.state.ownReadiness !== utils.STATUS.READY)
       .on("click", () =>
-        this.root.findChild({type: "TreeMenu"})
+        this.treemenu
           .encoding("x")
           .alignX("left")
           .alignY("top")
@@ -312,7 +316,7 @@ class _VizabiBarRankChart extends BaseComponent {
       })
       .on("mouseover", function() {
         const rect = this.getBBox();
-        const ctx = utils.makeAbsoluteContext(this, this.farthestViewportElement);
+        const ctx = legacyUtils.makeAbsoluteContext(this, this.farthestViewportElement);
         const coord = ctx(rect.x - 10, rect.y + rect.height + 10);
         dataNotes
           .setEncoding(_this.MDL.x)
