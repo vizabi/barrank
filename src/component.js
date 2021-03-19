@@ -149,12 +149,12 @@ class _VizabiBarRankChart extends BaseComponent {
 
   get MDL(){
     return {
-      frame: this.model.encoding.get("frame"),
-      selected: this.model.encoding.get("selected").data.filter,
-      highlighted: this.model.encoding.get("highlighted").data.filter,
-      x: this.model.encoding.get("x"),
-      color: this.model.encoding.get("color"),
-      label: this.model.encoding.get("label")
+      frame: this.model.encoding.frame,
+      selected: this.model.encoding.selected.data.filter,
+      highlighted: this.model.encoding.highlighted.data.filter,
+      x: this.model.encoding.x,
+      color: this.model.encoding.color,
+      label: this.model.encoding.label
     };
   }
 
