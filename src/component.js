@@ -205,7 +205,7 @@ class _VizabiBarRankChart extends BaseComponent {
   }
 
   _updateLayoutProfile(){
-    this.services.layout.width + this.services.layout.height;
+    this.services.layout.size;
 
     this.profileConstants = this.services.layout.getProfileConstants(PROFILE_CONSTANTS, PROFILE_CONSTANTS_FOR_PROJECTOR);
     this.height = this.element.node().clientHeight || 0;
@@ -235,7 +235,8 @@ class _VizabiBarRankChart extends BaseComponent {
       infoElMargin,
     } = this.profileConstants;
 
-    this.services.layout.width + this.services.layout.height + this.services.layout.projector;
+    this.services.layout.size;
+    this.services.layout.projector;
 
     // header
     this.DOM.header.attr("height", margin.top);
@@ -448,7 +449,7 @@ class _VizabiBarRankChart extends BaseComponent {
   _drawData() {
 
     //TODO this is ugly
-    const sizes = this.services.layout.width + this.services.layout.height + this.services.layout.projector;
+    const sizes = this.services.layout.size + this.services.layout.projector;
     const sizeChanged = sizes !== this.sizes_1;
     this.sizes_1 = sizes;
     
