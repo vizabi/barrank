@@ -18,7 +18,7 @@ import { observable } from "mobx";
 export default class BarRankChart extends BaseComponent {
   
   constructor(config){
-    const marker = config.splash(config.model.markers.bar);
+    const marker = config.model.markers.bar.encoding.frame.splash.marker;
 
     config.name = "barrankchart";
 
