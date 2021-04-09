@@ -18,6 +18,7 @@ import { observable } from "mobx";
 export default class BarRankChart extends BaseComponent {
   
   constructor(config){
+    Vizabi.utils.applyDefaults(config.model.markers.bar.config, BarRankChart.DEFAULT_CORE);
     const marker = config.model.markers.bar.encoding.frame.splash.marker;
 
     config.name = "barrankchart";
@@ -92,3 +93,33 @@ BarRankChart.DEFAULT_UI = {
   chart: {
   }
 };
+
+BarRankChart.DEFAULT_CORE = {
+  requiredEncodings: ["x"],
+  encoding: {
+    selected: {
+      modelType: "selection"
+    },
+    highlighted: {
+      modelType: "selection"
+    },
+    x: {
+      scale: {
+        allowedTypes: ["linear", "log", "genericLog", "pow"]
+      }
+    },
+    color: {
+      scale: {
+        modelType: "color"
+      }
+    },
+    label: {
+      data: {
+        modelType: "entityPropertyDataConfig"
+      }
+    },
+    frame: {
+      modelType: "frame",
+    }
+  }
+}
