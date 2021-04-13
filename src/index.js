@@ -13,7 +13,6 @@ import {
   ButtonList 
 } from "VizabiSharedComponents";
 import {VizabiBarRankChart} from "./component.js";
-import { observable } from "mobx";
 
 export default class BarRankChart extends BaseComponent {
   
@@ -122,4 +121,6 @@ BarRankChart.DEFAULT_CORE = {
       modelType: "frame",
     }
   }
-}
+};
+
+BarRankChart.versionInfo = { version: __VERSION, build: __BUILD };
