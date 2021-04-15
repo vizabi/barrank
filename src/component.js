@@ -184,6 +184,7 @@ class _VizabiBarRankChart extends BaseComponent {
     this.addReaction(this._resizeSvg);
     this.addReaction(this._scroll);
 
+    this.addReaction(this._drawForecastOverlay);
     this.addReaction(this._updateFrameDisplay);
     this.addReaction(this.updateDoubtOpacity);
   }
@@ -198,9 +199,10 @@ class _VizabiBarRankChart extends BaseComponent {
   
   _drawForecastOverlay() {
     this.DOM.forecastOverlay.classed("vzb-hidden", 
-      !this.MDL.frame.endBeforeForecast || 
-      !this.ui.showForecastOverlay || 
-      (this.MDL.frame.value <= this.MDL.frame.endBeforeForecast)
+    !this.ui.showForecast || 
+    !this.ui.showForecastOverlay || 
+    !this.ui.endBeforeForecast || 
+      (this.MDL.frame.value <= this.MDL.frame.parseValue(this.ui.endBeforeForecast))
     );
   }
 
