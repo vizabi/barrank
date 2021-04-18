@@ -43,10 +43,11 @@ export default class BarRankChart extends BaseComponent {
       name: "tree-menu",
       model: marker
     },{
-      name: "datawarning",
       type: DataWarning,
       placeholder: ".vzb-datawarning",
-      model: marker
+      options: {button: ".vzb-datawarning-button"},
+      model: marker,
+      name: "data-warning"
     },{
       type: DataNotes,
       placeholder: ".vzb-datanotes",

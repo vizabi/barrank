@@ -5,7 +5,7 @@ import { LegacyUtils as legacyUtils} from "VizabiSharedComponents";
 import { Icons } from "VizabiSharedComponents";
 import { Utils as utils } from "VizabiSharedComponents";
 
-const {ICON_WARN, ICON_QUESTION} = Icons;
+const {ICON_QUESTION} = Icons;
 const COLOR_BLACKISH = "rgb(51, 51, 51)";
 const COLOR_WHITEISH = "rgb(253, 253, 253)";
 
@@ -91,14 +91,8 @@ class _VizabiBarRankChart extends BaseComponent {
         </svg>
       </div>
 
-      <svg class="vzb-data-warning-svg">
-        <g class="vzb-data-warning vzb-noexport">
-          <svg></svg>
-          <text></text>
-        </g>
-        <g class="vzb-data-warning vzb-data-warning-missed-positions">
-          <text></text>
-        </g>
+      <svg class="vzb-br-footer">
+        <g class="vzb-datawarning-button vzb-noexport"></g>
       </svg>
 
       <svg class="vzb-br-tooltip-svg vzb-hidden">
@@ -132,17 +126,11 @@ class _VizabiBarRankChart extends BaseComponent {
       barContainer: this.element.select(".vzb-br-bars"),
       forecastOverlay: this.element.select(".vzb-br-forecastoverlay"),
   
-      footer: this.element.select(".vzb-data-warning-svg"),
-      dataWarning: this.element.select(".vzb-data-warning"),
-      missedPositionsWarning: this.element.select(".vzb-data-warning-missed-positions"),
+      footer: this.element.select(".vzb-br-footer"),
   
       tooltipSvg: this.element.select(".vzb-br-tooltip-svg"),
       tooltip: this.element.select(".vzb-br-tooltip")
     };
-
-    this.wScale = d3.scaleLinear()
-      .domain(this.ui.datawarning.doubtDomain)
-      .range(this.ui.datawarning.doubtRange);
 
     this._cache = {};
   }
@@ -186,7 +174,6 @@ class _VizabiBarRankChart extends BaseComponent {
 
     this.addReaction(this._drawForecastOverlay);
     this.addReaction(this._updateFrameDisplay);
-    this.addReaction(this.updateDoubtOpacity);
   }
 
   _getDuration() {
@@ -337,38 +324,20 @@ class _VizabiBarRankChart extends BaseComponent {
 
   _drawFooter(){
     const { margin } = this.profileConstants;
+    this.services.layout.size;
+    this.services.layout.projector;
 
     this.DOM.footer
       .style("height", `${margin.bottom}px`);
 
-    const warningBBox = this.DOM.dataWarning.select("text").node().getBBox();
-    this.DOM.dataWarning
-      .attr("transform", `translate(${this.width - margin.right - warningBBox.width}, ${warningBBox.height})`);
+    this.root.findChild({type: "_DataWarning"}).setOptions({
+      width: this.width,
+      height: this.height,
+      vertical: "top", 
+      horizontal: "right", 
+      right: margin.right
+    });
 
-    this.DOM.dataWarning
-      .select("svg")
-      .attr("width", warningBBox.height)
-      .attr("height", warningBBox.height)
-      .attr("x", -warningBBox.height - 5)
-      .attr("y", -warningBBox.height + 1);    
-
-    this.DOM.dataWarning.html(ICON_WARN)
-      .select("svg")
-      .attr("width", 0).attr("height", 0);
-
-    this.DOM.dataWarning.append("text")
-      .text(this.localise("hints/dataWarning"));
-
-    this.DOM.dataWarning
-      .on("click", () => this.parent.findChild({name: "datawarning"}).toggle())
-      .on("mouseover", () => this.updateDoubtOpacity(1))
-      .on("mouseout", () => this.updateDoubtOpacity());
-  }
-
-  updateDoubtOpacity(opacity) {
-    if (opacity == null) opacity = this.wScale(this.MDL.frame.value.getUTCFullYear());
-    if (this.MDL.selected.any()) opacity = 1;
-    this.DOM.dataWarning.style("opacity", opacity);
   }
 
   _getLabelText(d) {
@@ -720,11 +689,7 @@ _VizabiBarRankChart.DEFAULT_UI = {
   opacitySelect: 1.0,
   opacityHighlightDim: 0.3,
   opacitySelectDim: 0.5,
-  opacityRegular: 1.0,
-  datawarning: {
-    doubtDomain: [1800, 1950, 2020],
-    doubtRange: [1.0, 0.8, 0.5]
-  },
+  opacityRegular: 1.0
 };
 
 //export default chart;
