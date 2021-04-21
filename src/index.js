@@ -17,8 +17,12 @@ import {VizabiBarRankChart} from "./component.js";
 export default class BarRankChart extends BaseComponent {
   
   constructor(config){
-    Vizabi.utils.applyDefaults(config.model.markers.bar.config, BarRankChart.DEFAULT_CORE);
-    const marker = config.model.markers.bar.encoding.frame.splash.marker;
+    
+    const fullMarker = config.model.markers.bar;
+    Vizabi.utils.applyDefaults(fullMarker.config, BarRankChart.DEFAULT_CORE);
+
+    const frameType = Vizabi.stores.encodings.modelTypes.frame;
+    const { marker, splashMarker } = frameType.splashMarker(fullMarker);
 
     config.name = "barrankchart";
 
@@ -85,6 +89,8 @@ export default class BarRankChart extends BaseComponent {
     };
 
     super(config);
+
+    this.splashMarker = splashMarker;
   }
 }
 
