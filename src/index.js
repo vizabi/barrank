@@ -10,7 +10,8 @@ import {
   TreeMenu,
   SteppedSlider,
   Dialogs,
-  ButtonList 
+  ButtonList,
+  versionInfo
 } from "VizabiSharedComponents";
 import {VizabiBarRankChart} from "./component.js";
 
@@ -130,4 +131,4 @@ BarRankChart.DEFAULT_CORE = {
   }
 };
 
-BarRankChart.versionInfo = { version: __VERSION, build: __BUILD };
+BarRankChart.versionInfo = { version: __VERSION, build: __BUILD, package: __PACKAGE_JSON_FIELDS, sharedComponents: versionInfo};
