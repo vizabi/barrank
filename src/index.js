@@ -24,6 +24,7 @@ export default class BarRankChart extends BaseComponent {
 
     const frameType = Vizabi.stores.encodings.modelTypes.frame;
     const { marker, splashMarker } = frameType.splashMarker(fullMarker);
+    config.model.markers.bar = marker;
 
     config.name = "barrankchart";
 
