@@ -359,7 +359,7 @@ class _VizabiBarRankChart extends BaseComponent {
 
     //purge cache from the items that are no longer in data, to have them set as "new" when re-added
     Object.keys(this._cache).forEach(cacheItem => {
-      if (!this.model.dataMap.hasByObjOrStr(null, cacheItem))
+      if (!this.model.dataMap.hasByStr(cacheItem))
         delete this._cache[cacheItem];      
     });
 
