@@ -140,7 +140,7 @@ class _VizabiBarRankChart extends BaseComponent {
       frame: this.model.encoding.frame,
       selected: this.model.encoding.selected.data.filter,
       highlighted: this.model.encoding.highlighted.data.filter,
-      x: this.model.encoding.x,
+      x: this.model.encoding[this.state.alias.x || "x"],
       color: this.model.encoding.color,
       label: this.model.encoding.label
     };
@@ -153,7 +153,6 @@ class _VizabiBarRankChart extends BaseComponent {
     this.localise = this.services.locale.auto();
 
     // new scales and axes
-    this.xScale = this.MDL.x.scale.d3Scale.copy();
     this.cScale = this.MDL.color.scale.d3Scale;
     
     this.addReaction(this._drawForecastOverlay);
@@ -186,10 +185,10 @@ class _VizabiBarRankChart extends BaseComponent {
   
   _drawForecastOverlay() {
     this.DOM.forecastOverlay.classed("vzb-hidden", 
-    !this.ui.showForecast || 
-    !this.ui.showForecastOverlay || 
-    !this.ui.endBeforeForecast || 
-      (this.MDL.frame.value <= this.MDL.frame.parseValue(this.ui.endBeforeForecast))
+      !this.ui.showForecast || 
+      !this.ui.showForecastOverlay || 
+      !this.ui.endBeforeForecast || 
+        (this.MDL.frame.value <= this.MDL.frame.parseValue(this.ui.endBeforeForecast))
     );
   }
 
@@ -285,7 +284,7 @@ class _VizabiBarRankChart extends BaseComponent {
       .classed("vzb-disabled", this.treemenu.state.ownReadiness !== utils.STATUS.READY)
       .on("click", () =>
         this.treemenu
-          .encoding("x")
+          .encoding(this._alias("x"))
           .alignX("left")
           .alignY("top")
           .updateView()
@@ -367,12 +366,12 @@ class _VizabiBarRankChart extends BaseComponent {
       //copy array in order to not sort in place
       .concat()
       //sort array by x value
-      .sort((a, b) => d3.descending(a.x, b.x))
+      .sort((a, b) => d3.descending(a[this._alias("x")], b[this._alias("x")]))
       //reduce allows looking at the previous value to calcaulte the rank, as we go
       .reduce((result, d, index) => {
         const id = d[Symbol.for("key")];
         const cached = this._cache[id];
-        const value = d.x;
+        const value = d[this._alias("x")];
         const color = d.color;
         const valueValid = value || value === 0;
         if (!valueValid) this.nullValuesCount++;
@@ -419,8 +418,8 @@ class _VizabiBarRankChart extends BaseComponent {
 
   _drawData() {
 
-    //TODO this is ugly
-    const sizes = this.services.layout.size + this.services.layout.projector;
+    //TODO this is ugly, make this.w and h computed instead
+    const sizes = JSON.stringify(this.services.layout.size) + this.width + this.height + this.services.layout.projector;
     const sizeChanged = sizes !== this.sizes_1;
     this.sizes_1 = sizes;
     
@@ -443,10 +442,12 @@ class _VizabiBarRankChart extends BaseComponent {
       - (hasNegativeValues ? 0 : longestLabelW)
     ) / (hasNegativeValues ? 2 : 1);
 
-    this.xScale.range([0, rightEdge]);
+    const xScale = this.MDL.x.scale.d3Scale;
+
+    xScale.range([0, rightEdge]);
     
     if (this.MDL.x.scale.type !== "log") {
-      this.xScale.domain([0, Math.max(...this.xScale.domain())]);
+      xScale.domain([0, Math.max(...xScale.domain())]);
     }
 
     const shift = hasNegativeValues ? rightEdge : longestLabelW;
@@ -467,7 +468,7 @@ class _VizabiBarRankChart extends BaseComponent {
     this.__dataProcessed.forEach((bar) => {
       const { value } = bar;
       const { barHeight } = this.profileConstants;
-      const width = Math.max(0, value && this.xScale(Math.abs(value))) || 0;
+      const width = Math.max(0, value && xScale(Math.abs(value))) || 0;
 
       if (bar.isNew || sizeChanged || bar.changedValue)
         bar.DOM.label
@@ -677,6 +678,10 @@ class _VizabiBarRankChart extends BaseComponent {
 
         return opacityRegular;
       });
+  }
+
+  _alias(enc) {
+    return this.state.alias[enc] || enc;
   }
 }
 

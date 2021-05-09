@@ -12,6 +12,7 @@ import {
   Dialogs,
   ButtonList,
   CapitalVizabiService,
+  Repeater,
   versionInfo
 } from "VizabiSharedComponents";
 import {VizabiBarRankChart} from "./component.js";
@@ -30,10 +31,14 @@ export default class BarRankChart extends BaseComponent {
     config.name = "barrankchart";
 
     config.subcomponents = [{
-      type: VizabiBarRankChart,
-      placeholder: ".vzb-barrankchart",
+      type: Repeater,
+      placeholder: ".vzb-repeater",
       model: marker,
-      name: "chart"
+      options: {
+        ComponentClass: VizabiBarRankChart,
+        componentCssName: "vzb-barrankchart"
+      },
+      name: "chart",
     },{
       type: TimeSlider,
       placeholder: ".vzb-timeslider",
@@ -72,7 +77,7 @@ export default class BarRankChart extends BaseComponent {
     }];
 
     config.template = `
-      <div class="vzb-barrankchart"></div>
+      <div class="vzb-repeater vzb-barrankchart"></div>
       <div class="vzb-animationcontrols">
         <div class="vzb-timeslider"></div>
         <div class="vzb-speedslider"></div>
@@ -130,6 +135,10 @@ BarRankChart.DEFAULT_CORE = {
     },
     frame: {
       modelType: "frame",
+    },
+    repeat: {
+      modelType: "repeat",
+      allowEnc: ["x"]
     }
   }
 };
