@@ -110,7 +110,6 @@ BarRankChart.DEFAULT_UI = {
 };
 
 BarRankChart.DEFAULT_CORE = {
-  requiredEncodings: ["x"],
   encoding: {
     selected: {
       modelType: "selection"
