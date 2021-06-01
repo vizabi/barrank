@@ -152,9 +152,6 @@ class _VizabiBarRankChart extends BaseComponent {
   draw() {
     this.localise = this.services.locale.auto();
 
-    // new scales and axes
-    this.cScale = this.MDL.color.scale.d3Scale;
-    
     this.addReaction(this._drawForecastOverlay);
     
     if (this._updateLayoutProfile()) return; //return if exists with error
@@ -649,7 +646,7 @@ class _VizabiBarRankChart extends BaseComponent {
   }
 
   _getColor(value) {
-    return d3.rgb(this.cScale(value));
+    return d3.rgb(this.MDL.color.scale.d3Scale(value));
   }
 
   _getDarkerColor(d) {
