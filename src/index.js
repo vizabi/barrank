@@ -5,6 +5,7 @@ import {
   TimeSlider,
   DataNotes,
   DataWarning,
+  ErrorMessage,
   SpaceConfig,
   LocaleService,
   LayoutService,
@@ -81,6 +82,11 @@ export default class BarRankChart extends BaseComponent {
       options: {button: ".vzb-spaceconfig-button"},
       model: marker,
       name: "space-config"
+    },{
+      type: ErrorMessage,
+      placeholder: ".vzb-errormessage",
+      model: marker,
+      name: "error-message"
     }];
 
     config.template = `
@@ -97,6 +103,7 @@ export default class BarRankChart extends BaseComponent {
       <div class="vzb-datanotes"></div>
       <div class="vzb-datawarning"></div>
       <div class="vzb-spaceconfig"></div>
+      <div class="vzb-errormessage"></div>
     `;
 
     config.services = {
