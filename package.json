@@ -1,6 +1,6 @@
 {
-  "name": "@vizabi/barrankchart",
-  "version": "3.6.1",
+  "name": "@vizabi/barrank",
+  "version": "3.7.0",
   "description": "Vizabi bar rank chart",
   "scripts": {
     "prepublishOnly": "npm run build",
@@ -9,7 +9,7 @@
     "build": "cross-env NODE_ENV=production rollup -c",
     "deploy": "tool-deploy"
   },
-  "main": "build/barrankchart.js",
+  "main": "build/barrank.js",
   "files": [
     "build"
   ],
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vizabi/vizabi-barrankchart.git"
+    "url": "git+https://github.com/vizabi/vizabi-barrank.git"
   },
   "keywords": [],
   "author": {
@@ -42,9 +42,9 @@
   ],
   "license": "CC-BY-4.0",
   "bugs": {
-    "url": "https://github.com/vizabi/vizabi-barrankchart/issues"
+    "url": "https://github.com/vizabi/vizabi-barrank/issues"
   },
-  "homepage": "https://github.com/vizabi/vizabi-barrankchart#readme",
+  "homepage": "https://github.com/vizabi/vizabi-barrank#readme",
   "peerDependencies": {
     "mobx": "^5.15.7",
     "d3": "^6.7.0"

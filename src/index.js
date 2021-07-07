@@ -17,28 +17,28 @@ import {
   Repeater,
   versionInfo
 } from "VizabiSharedComponents";
-import {VizabiBarRankChart} from "./component.js";
+import {VizabiBarRank} from "./component.js";
 
-export default class BarRankChart extends BaseComponent {
+export default class BarRank extends BaseComponent {
   
   constructor(config){
     
     const fullMarker = config.model.markers.bar;
-    config.Vizabi.utils.applyDefaults(fullMarker.config, BarRankChart.DEFAULT_CORE);
+    config.Vizabi.utils.applyDefaults(fullMarker.config, BarRank.DEFAULT_CORE);
 
     const frameType = config.Vizabi.stores.encodings.modelTypes.frame;
     const { marker, splashMarker } = frameType.splashMarker(fullMarker);
     config.model.markers.bar = marker;
 
-    config.name = "barrankchart";
+    config.name = "barrank";
 
     config.subcomponents = [{
       type: Repeater,
       placeholder: ".vzb-repeater",
       model: marker,
       options: {
-        ComponentClass: VizabiBarRankChart,
-        componentCssName: "vzb-barrankchart"
+        ComponentClass: VizabiBarRank,
+        componentCssName: "vzb-barrank"
       },
       name: "chart",
     },{
@@ -90,7 +90,7 @@ export default class BarRankChart extends BaseComponent {
     }];
 
     config.template = `
-      <div class="vzb-repeater vzb-barrankchart"></div>
+      <div class="vzb-repeater vzb-barrank"></div>
       <div class="vzb-animationcontrols">
         <div class="vzb-timeslider"></div>
         <div class="vzb-speedslider"></div>
@@ -119,12 +119,12 @@ export default class BarRankChart extends BaseComponent {
 }
 
 
-BarRankChart.DEFAULT_UI = {
+BarRank.DEFAULT_UI = {
   chart: {
   }
 };
 
-BarRankChart.DEFAULT_CORE = {
+BarRank.DEFAULT_CORE = {
   encoding: {
     selected: {
       modelType: "selection"
@@ -157,4 +157,4 @@ BarRankChart.DEFAULT_CORE = {
   }
 };
 
-BarRankChart.versionInfo = { version: __VERSION, build: __BUILD, package: __PACKAGE_JSON_FIELDS, sharedComponents: versionInfo};
+BarRank.versionInfo = { version: __VERSION, build: __BUILD, package: __PACKAGE_JSON_FIELDS, sharedComponents: versionInfo};

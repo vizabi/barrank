@@ -70,7 +70,7 @@ const PROFILE_CONSTANTS_FOR_PROJECTOR = {
   }
 };
 
-class _VizabiBarRankChart extends BaseComponent {
+class _VizabiBarRank extends BaseComponent {
 
   constructor(config) {
     config.template = `
@@ -682,7 +682,7 @@ class _VizabiBarRankChart extends BaseComponent {
   }
 }
 
-_VizabiBarRankChart.DEFAULT_UI = {
+_VizabiBarRank.DEFAULT_UI = {
   lilFrameDisplayAlwaysHidden: false,
   showForecast: false,
   showForecastOverlay: true,
@@ -695,7 +695,7 @@ _VizabiBarRankChart.DEFAULT_UI = {
 };
 
 //export default chart;
-export const VizabiBarRankChart = decorate(_VizabiBarRankChart, {
+export const VizabiBarRank = decorate(_VizabiBarRank, {
   "MDL": computed,
   "__dataProcessed": computed
 });
