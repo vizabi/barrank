@@ -23,12 +23,14 @@ export default class BarRank extends BaseComponent {
   
   constructor(config){
     
-    const fullMarker = config.model.markers.bar;
-    config.Vizabi.utils.applyDefaults(fullMarker.config, BarRank.DEFAULT_CORE);
+    const markerName = config.options.markerName || "bar";
+    const fullMarker = config.model.markers[markerName];
+    config.Vizabi.utils.applyDefaults(fullMarker.config, BarRank.DEFAULT_CORE(markerName));
 
     const frameType = config.Vizabi.stores.encodings.modelTypes.frame;
     const { marker, splashMarker } = frameType.splashMarker(fullMarker);
-    config.model.markers.bar = marker;
+
+    config.model.markers[markerName] = marker;
 
     config.name = "barrank";
 
@@ -124,7 +126,7 @@ BarRank.DEFAULT_UI = {
   }
 };
 
-BarRank.DEFAULT_CORE = {
+BarRank.DEFAULT_CORE = (markerName) => ({
   encoding: {
     selected: {
       modelType: "selection"
@@ -155,6 +157,6 @@ BarRank.DEFAULT_CORE = {
       allowEnc: ["x"]
     }
   }
-};
+});
 
 BarRank.versionInfo = { version: __VERSION, build: __BUILD, package: __PACKAGE_JSON_FIELDS, sharedComponents: versionInfo};
