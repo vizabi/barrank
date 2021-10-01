@@ -4,8 +4,6 @@
 @import "../node_modules/@vizabi/shared-components/src/styles/vizabi-old/_chart.scss";
 
 .vzb-tool {
-  $vzb-br-year-size: 16em;
-
   &.vzb-small {
     .vzb-barrank {
       .vzb-br-total {
@@ -150,15 +148,6 @@
 
     .vzb-br-bars-svg {
       width: 100%;
-
-      .vzb-br-year {
-        @include opacity(.3);
-        font-size: $vzb-br-year-size;
-        fill: $vzb-color-grey;
-        text-anchor: middle;
-        -webkit-touch-callout: none;
-        user-select: none;
-      }
 
       .vzb-dimmed {
         > .vzb-br-bar {

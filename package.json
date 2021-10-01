@@ -1,6 +1,6 @@
 {
   "name": "@vizabi/barrank",
-  "version": "3.7.3",
+  "version": "3.8.0",
   "description": "Vizabi bar rank chart",
   "scripts": {
     "prepublishOnly": "npm run build",
