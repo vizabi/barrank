@@ -344,7 +344,10 @@ class _VizabiBarRank extends BaseComponent {
     else if (typeof d.label === "string") 
       label = d.label;
     else 
-      label = Object.entries(d.label).filter(entry => entry[0] != this.MDL.frame.data.concept).map(entry => entry[1]).join(", ");
+      label = Object.entries(d.label)
+        .filter(entry => entry[0] != this.MDL.frame.data.concept)
+        .map(entry => utils.isNumber(entry[1]) ? (entry[0] + ": " + entry[1]) : entry[1])
+        .join(", ");
 
     if (label.length >= longestLabelLength) label = label.substring(0, longestLabelLength - 1) + "…";
     return label;
