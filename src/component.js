@@ -321,20 +321,21 @@ class _VizabiBarRank extends BaseComponent {
   }
 
   _getLabelText(d) {
-    const longestLabelLength = this.profileConstants.longestLabelLength;
-    let label = "";
-    if (!d.label) 
-      label = d[Symbol.for("key")];
-    else if (typeof d.label === "string") 
-      label = d.label;
-    else 
-      label = Object.entries(d.label)
+    if (typeof d.label == "object") 
+      return Object.entries(d.label)
         .filter(entry => entry[0] != this.MDL.frame.data.concept)
-        .map(entry => utils.isNumber(entry[1]) ? (entry[0] + ": " + entry[1]) : entry[1])
+        .map(entry => legacyUtils.isNumber(entry[1]) ? (entry[0] + ": " + entry[1]) : entry[1])
         .join(", ");
+    if (d.label != null) return "" + d.label;
+    return d[Symbol.for("key")];
+  }
 
-    if (label.length >= longestLabelLength) label = label.substring(0, longestLabelLength - 1) + "…";
-    return label;
+  _getShortLabelText(d){
+    let label = this._getLabelText(d);
+    const longestLabelLength = this.profileConstants.longestLabelLength;
+    return (label.length >= longestLabelLength) 
+      ? label.substring(0, longestLabelLength - 1) + "…"
+      : label;
   }
 
   get __dataProcessed() {
@@ -360,7 +361,7 @@ class _VizabiBarRank extends BaseComponent {
         const valueValid = value || value === 0;
         if (!valueValid) this.nullValuesCount++;
         const formattedValue = valueValid? this.localise(value) : this.localise("hints/nodata");
-        const formattedLabel = this._getLabelText(d);
+        const shortLabelText = this._getShortLabelText(d);
         const rank = !index || result[index - 1].formattedValue !== formattedValue ? index + 1 : result[index - 1].rank;
   
         //cache allows to know which aspects we need to update in particular per DOM marker
@@ -368,12 +369,12 @@ class _VizabiBarRank extends BaseComponent {
           result.push(Object.assign(cached, {
             value,
             formattedValue,
-            formattedLabel,
+            shortLabelText,
             index,
             rank,
             color,
             changedFormattedValue: formattedValue !== cached.formattedValue,
-            changedFormattedLabel: formattedLabel !== cached.formattedLabel,
+            changedShortLabelText: shortLabelText !== cached.shortLabelText,
             changedValue: value !== cached.value,
             changedIndex: index !== cached.index,
             changedColor: color !== cached.color,
@@ -383,12 +384,12 @@ class _VizabiBarRank extends BaseComponent {
           result.push(this._cache[id] = Object.assign({}, d, {
             value,
             formattedValue,
-            formattedLabel,
+            shortLabelText,
             index,
             rank,
             color,
             changedFormattedValue: true,
-            changedFormattedLabel: true,
+            changedShortLabelText: true,
             changedValue: true,
             changedIndex: true,
             changedColor: true,
@@ -460,9 +461,12 @@ class _VizabiBarRank extends BaseComponent {
           .attr("y", barHeight / 2)
           .attr("text-anchor", labelAnchor(value));
 
-      if (bar.isNew || bar.changedFormattedLabel) 
+      if (bar.isNew || bar.changedShortLabelText) {
         bar.DOM.label
-          .text(bar.formattedLabel);
+          .text(bar.shortLabelText);
+        bar.DOM.title
+          .text(this._getLabelText(bar));
+      }
 
       if (bar.isNew || sizeChanged)
         bar.DOM.rect
@@ -545,13 +549,16 @@ class _VizabiBarRank extends BaseComponent {
           .attr("class", "vzb-br-rank")
           .attr("dy", ".325em");
 
+        const title = group.append("title");
+
         Object.assign(d, {
           DOM: {
             group,
             label,
             rect,
             value,
-            rank
+            rank,
+            title
           }
         });
       });
