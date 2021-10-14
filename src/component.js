@@ -228,24 +228,8 @@ class _VizabiBarRank extends BaseComponent {
     const headerTitle = this.DOM.title;
 
     // change header titles for new data
-    const { name, unit } = this.MDL.x.data.conceptProps;
-
-    const headerTitleText = headerTitle.select("text");
-
-    if (unit) {
-      headerTitleText.text(`${name}, ${unit}`);
-
-      const rightEdgeOfLeftText = headerMargin.left
-        + headerTitle.node().getBBox().width
-        + infoElMargin
-        + infoElHeight;
-
-      if (rightEdgeOfLeftText > this.width - headerMargin.right) {
-        headerTitleText.text(name);
-      }
-    } else {
-      headerTitleText.text(name);
-    }
+    headerTitle.select("text")
+      .text(utils.getConceptName(this.MDL.x));
 
     const headerTitleBBox = headerTitle.node().getBBox();
 
