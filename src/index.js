@@ -39,8 +39,8 @@ export default class BarRank extends BaseComponent {
       placeholder: ".vzb-repeater",
       model: marker,
       options: {
-        ComponentClass: VizabiBarRank,
-        componentCssName: "vzb-barrank"
+        repeatedComponent: VizabiBarRank,
+        repeatedComponentCssClass: "vzb-barrank"
       },
       name: "chart",
     },{
@@ -92,7 +92,7 @@ export default class BarRank extends BaseComponent {
     }];
 
     config.template = `
-      <div class="vzb-repeater vzb-barrank"></div>
+      <div class="vzb-repeater"></div>
       <div class="vzb-animationcontrols">
         <div class="vzb-timeslider"></div>
         <div class="vzb-speedslider"></div>
