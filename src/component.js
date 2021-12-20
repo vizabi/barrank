@@ -87,7 +87,7 @@ class _VizabiBarRank extends BaseComponent {
       <div class="vzb-br-barsviewport vzb-dialog-scrollable">
         <svg class="vzb-br-bars-svg vzb-export">
           <g class="vzb-br-bars"></g>
-          <rect class="vzb-br-forecastoverlay vzb-hidden" x="0" y="0" width="100%" height="100%" fill="url(#vzb-br-pattern-lines)" pointer-events='none'></rect>
+          <rect class="vzb-br-forecastoverlay vzb-hidden" x="0" y="0" width="100%" height="100%" fill="url(#vzb-br-pattern-lines-${config.id})" pointer-events='none'></rect>
         </svg>
       </div>
 
@@ -104,7 +104,7 @@ class _VizabiBarRank extends BaseComponent {
       
       <svg>
         <defs>
-            <pattern id="vzb-br-pattern-lines" x="0" y="0" patternUnits="userSpaceOnUse" width="50" height="50" viewBox="0 0 10 10"> 
+            <pattern id="vzb-br-pattern-lines-${config.id}" x="0" y="0" patternUnits="userSpaceOnUse" width="50" height="50" viewBox="0 0 10 10"> 
                 <path d='M-1,1 l2,-2M0,10 l10,-10M9,11 l2,-2' stroke='black' stroke-width='3' opacity='0.08'/>
             </pattern> 
         </defs>
