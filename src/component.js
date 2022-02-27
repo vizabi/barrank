@@ -570,7 +570,7 @@ class _VizabiBarRank extends BaseComponent {
     this.services.layout.projector;
 
     const probe = this.DOM.barContainer
-      .append("g").attr("class", "vzb-br-bar vzb-br-probe vzb-hidden");
+      .append("g").attr("class", "vzb-br-bar vzb-br-probe vzb-invisible");
 
     this.__labelCharWidth = probe.append("text")
       .attr("class", "vzb-br-label")
