@@ -23,7 +23,7 @@ export default class BarRank extends BaseComponent {
   
   constructor(config){
     
-    const markerName = config.options.markerName || "bar";
+    const markerName = config.options?.markerNames?.bar || "bar";
     const fullMarker = config.model.markers[markerName];
     config.Vizabi.utils.applyDefaults(fullMarker.config, BarRank.DEFAULT_CORE(markerName));
 
