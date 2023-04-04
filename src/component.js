@@ -1,9 +1,12 @@
 import {decorate, computed} from "mobx";
 
-import { BaseComponent } from "VizabiSharedComponents";
-import { LegacyUtils as legacyUtils} from "VizabiSharedComponents";
-import { Icons } from "VizabiSharedComponents";
-import { Utils as utils } from "VizabiSharedComponents";
+import { 
+  BaseComponent,
+  Icons,
+  Utils as utils, 
+  LegacyUtils as legacyUtils
+} from "@vizabi/shared-components";
+import * as d3 from "d3";
 
 const {ICON_QUESTION} = Icons;
 const COLOR_BLACKISH = "rgb(51, 51, 51)";
