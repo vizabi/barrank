@@ -232,7 +232,7 @@ class _VizabiBarRank extends BaseComponent {
 
     // change header titles for new data
     headerTitle.select("text")
-      .text(utils.getConceptName(this.MDL.x));
+      .text(utils.getConceptName(this.MDL.x, this.localise));
 
     const headerTitleBBox = headerTitle.node().getBBox();
 
