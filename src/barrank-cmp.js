@@ -324,10 +324,14 @@ class _VizabiBarRank extends BaseComponent {
   }
 
   _getLabelText(d) {
+    const markerSpace = this.model.data.space;
     if (typeof d.label == "object") 
       return Object.entries(d.label)
-        .filter(entry => entry[0] != this.MDL.frame.data.concept)
-        .map(entry => legacyUtils.isNumber(entry[1]) ? (entry[0] + ": " + entry[1]) : entry[1])
+        .filter(([k, v]) => k != this.MDL.frame.data.concept)
+        //sort parts of the name along the marker space array, so we get geo, gender instead of gender, geo
+        .sort(([ak, av], [bk, bv]) => markerSpace.indexOf(ak) - markerSpace.indexOf(bk))
+        //add keys where values are numbers, such as "age: 69"
+        .map(([k, v]) => legacyUtils.isNumber(v) ? k + ": " + v : v)
         .join(", ");
     if (d.label != null) return "" + d.label;
     return d[Symbol.for("key")];
@@ -336,7 +340,7 @@ class _VizabiBarRank extends BaseComponent {
   _getShortLabelText(d){
     let label = this._getLabelText(d);
     const longestLabelLength = this.profileConstants.longestLabelLength;
-    return (label.length >= longestLabelLength) 
+    return (label.length > longestLabelLength) 
       ? label.substring(0, longestLabelLength - 1) + "…"
       : label;
   }
