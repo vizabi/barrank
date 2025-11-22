@@ -6,7 +6,6 @@ import {
   DataNotes,
   DataWarning,
   ErrorMessage,
-  SpaceConfig,
   LocaleService,
   LayoutService,
   TreeMenu,
@@ -79,12 +78,6 @@ export default class BarRank extends BaseComponent {
       name: "buttons",
       model: marker
     },{
-      type: SpaceConfig,
-      placeholder: ".vzb-spaceconfig",
-      options: {button: ".vzb-spaceconfig-button"},
-      model: marker,
-      name: "space-config"
-    },{
       type: ErrorMessage,
       placeholder: ".vzb-errormessage",
       model: marker,
@@ -104,7 +97,6 @@ export default class BarRank extends BaseComponent {
       <div class="vzb-treemenu"></div>
       <div class="vzb-datanotes"></div>
       <div class="vzb-datawarning"></div>
-      <div class="vzb-spaceconfig"></div>
       <div class="vzb-errormessage"></div>
     `;
 
