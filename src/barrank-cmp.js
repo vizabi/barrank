@@ -94,10 +94,6 @@ class _VizabiBarRank extends BaseComponent {
         </svg>
       </div>
 
-      <svg class="vzb-br-footer">
-        <g class="vzb-datawarning-button vzb-noexport"></g>
-      </svg>
-
       <svg class="vzb-br-tooltip-svg vzb-hidden">
         <g class="vzb-br-tooltip vzb-hidden">
           <rect class="vzb-tooltip-border"></rect>
@@ -129,8 +125,6 @@ class _VizabiBarRank extends BaseComponent {
       barContainer: this.element.select(".vzb-br-bars"),
       forecastOverlay: this.element.select(".vzb-br-forecastoverlay"),
   
-      footer: this.element.select(".vzb-br-footer"),
-  
       tooltipSvg: this.element.select(".vzb-br-tooltip-svg"),
       tooltip: this.element.select(".vzb-br-tooltip")
     };
@@ -161,7 +155,6 @@ class _VizabiBarRank extends BaseComponent {
     this.addReaction(this._getDuration);
     this.addReaction(this._drawHeader);
     this.addReaction(this._drawInfoEl);
-    this.addReaction(this._drawFooter);
     this.addReaction(this._estimateLabelAndValueWidth);
 
     //this.addReaction(this._processFrameData);
@@ -303,24 +296,6 @@ class _VizabiBarRank extends BaseComponent {
       .select("svg")
       .attr("width", infoElHeight + "px").attr("height", infoElHeight + "px")
       .classed("vzb-hidden", !conceptPropsX.description && !conceptPropsX.sourceLink);
-  }
-
-  _drawFooter(){
-    const { margin } = this.profileConstants;
-    this.services.layout.size;
-    this.services.layout.projector;
-
-    this.DOM.footer
-      .style("height", `${margin.bottom}px`);
-
-    this.root.findChild({type: "_DataWarning"}).setOptions({
-      width: this.width,
-      height: this.height,
-      vertical: "top", 
-      horizontal: "right", 
-      right: margin.right
-    });
-
   }
 
   _getLabelText(d) {
