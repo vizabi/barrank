@@ -129,6 +129,7 @@ BarRank.DEFAULT_UI = {
     },
     "markercontrols": {
       "disableSlice": true,
+      "disableSwitch": false,
       "disableAddRemoveGroups": true,
       "primaryDim": null,
       "drilldown": null,
